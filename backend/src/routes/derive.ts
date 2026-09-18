@@ -35,7 +35,8 @@ export function registerDeriveRoute(app: FastifyInstance) {
     }
 
     const envelope: SignedFiEnvelope = JSON.parse(row.envelope_json);
-    let credits = envelope.statement.transactions.filter((t) => t.type === 'CREDIT');
+    const allCredits = envelope.statement.transactions.filter((t) => t.type === 'CREDIT');
+    let credits = allCredits;
     if (body.confirmedPayers && body.confirmedPayers.length > 0) {
       const allowedPayers = new Set(body.confirmedPayers);
       credits = credits.filter((t) => {
@@ -68,9 +69,14 @@ export function registerDeriveRoute(app: FastifyInstance) {
     // this one line having the right units.
     const WEEKS_PER_MONTH = 52 / 12;
     const recentCredits = credits.slice(-4);
-    const weeklyMean =
-      recentCredits.reduce((sum, t) => sum + parseFloat(t.amount), 0) / recentCredits.length;
+    const weeklyMean = recentCredits.length > 0 ? 
+      recentCredits.reduce((sum, t) => sum + parseFloat(t.amount), 0) / recentCredits.length : 0;
     const monthlyIncome = Math.round(weeklyMean * WEEKS_PER_MONTH);
+
+    // Calculate reveal numbers
+    const totalCreditsCount = allCredits.length;
+    const countedCreditsCount = credits.length;
+    const ignoredCreditsCount = totalCreditsCount - countedCreditsCount;
 
     // Run payer profiler
     const { profilePayers } = await import('../lib/payerProfiler.js');
@@ -116,6 +122,7 @@ export function registerDeriveRoute(app: FastifyInstance) {
     reply.send({
       sessionId: body.sessionId,
       derived: { tenureMonths, weeksPaid, monthlyIncome },
+      stats: { totalCredits: totalCreditsCount, countedCredits: countedCreditsCount, ignoredCredits: ignoredCreditsCount },
       payers,
       note: 'Derived server-side from the AA-fetched envelope. Nothing was sent to or computed on a phone.',
     });

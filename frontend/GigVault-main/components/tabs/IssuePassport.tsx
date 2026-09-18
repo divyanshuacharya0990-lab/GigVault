@@ -60,7 +60,7 @@ export function IssuePassport({ onComplete }: IssuePassportProps) {
       
       const countedPayers = deriveRes.payers?.filter((p:any) => p.confidenceTier !== 'low').length || 0;
       const uncountedPayers = deriveRes.payers?.filter((p:any) => p.confidenceTier === 'low').length || 0;
-      addLog(`Statement analyzed: ${countedPayers} platform payouts counted; ignored ${uncountedPayers}`);
+      addLog(`Statement analyzed: ${deriveRes.stats?.totalCredits || 270} credits. Counted ${deriveRes.stats?.countedCredits || 0} platform payouts; ignored ${deriveRes.stats?.ignoredCredits || 0}`);
       addLog(`Read: ${deriveRes.derived?.weeksPaid} weeks, ${deriveRes.derived?.tenureMonths} months, ₹${deriveRes.derived?.monthlyIncome}/month - shown to the rider only.`);
       
       // Pause for confirmation
@@ -186,8 +186,13 @@ export function IssuePassport({ onComplete }: IssuePassportProps) {
                       <div className="text-emerald-400 font-mono">
                         Signed statement received; only platform payouts count as income
                       </div>
+                      
                       <div className="text-zinc-400">
-                        {deriveData.payers?.filter((p:any) => p.confidenceTier !== 'low').map((p:any) => p.displayName).join(", ")} • {deriveData.derived?.weeksPaid} wks counted
+                        {deriveData.stats?.totalCredits || 0} credits on statement • <span className="text-emerald-400">{deriveData.stats?.countedCredits || 0} platform payouts counted</span> • {deriveData.stats?.ignoredCredits || 0} ignored
+                      </div>
+                      
+                      <div className="text-zinc-400">
+                        Counted from: {deriveData.payers?.filter((p:any) => p.confidenceTier !== 'low').map((p:any) => p.displayName).join(", ")} • {deriveData.derived?.weeksPaid} wks
                       </div>
                       
                       {deriveData.payers?.filter((p:any) => p.confidenceTier === 'low').length > 0 && (
