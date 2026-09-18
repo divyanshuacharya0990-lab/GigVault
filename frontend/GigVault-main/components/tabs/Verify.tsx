@@ -270,46 +270,48 @@ export function Verify() {
                 Scan Another
               </button>
             </div>
-            
-            {/* Hidden Receipt for Printing */}
-            <div id="print-receipt" className="hidden p-8 font-mono text-black bg-white">
-              <div className="border-b-2 border-black pb-4 mb-6 text-center">
-                <h1 className="text-2xl font-bold uppercase tracking-widest">GigVault</h1>
-                <p className="text-sm uppercase tracking-widest mt-1">Secure Verification Receipt</p>
-              </div>
-
-              <div className="space-y-6">
-                <div>
-                  <h3 className="font-bold uppercase border-b border-gray-300 pb-1 mb-2">Verification Status</h3>
-                  <p className="text-lg">✅ PASSED / ADMITTED</p>
-                  <p className="text-sm text-gray-600 mt-1">Date: {new Date().toLocaleString()}</p>
-                </div>
-
-                <div>
-                  <h3 className="font-bold uppercase border-b border-gray-300 pb-1 mb-2">Underwriting Requirements Met</h3>
-                  <ul className="space-y-1 text-sm">
-                    <li>• Tenure: ≥ {scanResult.requirements?.minTenureMonths} Months (Actual: {scanResult.admittedPayload?.tenureMonths})</li>
-                    <li>• Monthly Income: ≥ ₹{scanResult.requirements?.minIncome} (Actual: ₹{scanResult.admittedPayload?.monthlyIncome})</li>
-                    <li>• Weeks Paid: ≥ 100 Weeks (Actual: {scanResult.admittedPayload?.weeksPaid})</li>
-                  </ul>
-                </div>
-
-                <div>
-                  <h3 className="font-bold uppercase border-b border-gray-300 pb-1 mb-2">Cryptographic Attestation</h3>
-                  <ul className="space-y-1 text-sm text-gray-800 break-all">
-                    <li><strong>Token ID:</strong> {scanResult.chain?.tokenId || "N/A"}</li>
-                    <li><strong>Commitment Hash:</strong> {scanResult.admittedPayload?.commitment || "N/A"}</li>
-                    <li><strong>Session ID:</strong> {scanResult.sessionId || "N/A"}</li>
-                  </ul>
-                </div>
-              </div>
-              
-              <div className="mt-12 text-center text-xs text-gray-500 uppercase tracking-widest">
-                End of receipt<br/>Verify at gigvault.dev
-              </div>
-            </div>
           </motion.div>
         </AnimatePresence>
+      )}
+
+      {/* Hidden Receipt for Printing (Moved outside of motion.div to avoid transform context issues) */}
+      {verified && scanResult && (
+        <div id="print-receipt" className="hidden p-8 font-mono text-black bg-white">
+          <div className="border-b-2 border-black pb-4 mb-6 text-center">
+            <h1 className="text-2xl font-bold uppercase tracking-widest">GigVault</h1>
+            <p className="text-sm uppercase tracking-widest mt-1">Secure Verification Receipt</p>
+          </div>
+
+          <div className="space-y-6">
+            <div>
+              <h3 className="font-bold uppercase border-b border-gray-300 pb-1 mb-2">Verification Status</h3>
+              <p className="text-lg">✅ PASSED / ADMITTED</p>
+              <p className="text-sm text-gray-600 mt-1">Date: {new Date().toLocaleString()}</p>
+            </div>
+
+            <div>
+              <h3 className="font-bold uppercase border-b border-gray-300 pb-1 mb-2">Underwriting Requirements Met</h3>
+              <ul className="space-y-1 text-sm">
+                <li>• Tenure: ≥ {scanResult.requirements?.minTenureMonths} Months (Actual: {scanResult.admittedPayload?.tenureMonths})</li>
+                <li>• Monthly Income: ≥ ₹{scanResult.requirements?.minIncome} (Actual: ₹{scanResult.admittedPayload?.monthlyIncome})</li>
+                <li>• Weeks Paid: ≥ 100 Weeks (Actual: {scanResult.admittedPayload?.weeksPaid})</li>
+              </ul>
+            </div>
+
+            <div>
+              <h3 className="font-bold uppercase border-b border-gray-300 pb-1 mb-2">Cryptographic Attestation</h3>
+              <ul className="space-y-1 text-sm text-gray-800 break-all">
+                <li><strong>Token ID:</strong> {scanResult.chain?.tokenId || "N/A"}</li>
+                <li><strong>Commitment Hash:</strong> {scanResult.admittedPayload?.commitment || "N/A"}</li>
+                <li><strong>Session ID:</strong> {scanResult.sessionId || "N/A"}</li>
+              </ul>
+            </div>
+          </div>
+          
+          <div className="mt-12 text-center text-xs text-gray-500 uppercase tracking-widest">
+            End of receipt<br/>Verify at gigvault.dev
+          </div>
+        </div>
       )}
     </div>
   );
