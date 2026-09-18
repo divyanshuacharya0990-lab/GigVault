@@ -1,0 +1,6 @@
+# Shell and circuit sources must stay LF: Git on Windows would otherwise CRLF them
+# and bash reads "pipefail\r" as an invalid option.
+*.sh   text eol=lf
+*.circom text eol=lf
+*.mjs  text eol=lf
+*.cjs  text eol=lf

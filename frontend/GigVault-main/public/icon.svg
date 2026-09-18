@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="GigVault logo">
+  <defs>
+    <linearGradient id="g1" x1="96" y1="80" x2="434" y2="440" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#B77BFF"/>
+      <stop offset="0.55" stop-color="#8E6CFF"/>
+      <stop offset="1" stop-color="#2DD4BF"/>
+    </linearGradient>
+  </defs>
+
+  <path
+    d="M256 64L406 162V350L256 448L106 350V162L256 64Z"
+    fill="none"
+    stroke="url(#g1)"
+    stroke-width="60"
+    stroke-linejoin="round"
+  />
+
+  <path
+    d="M331 170H216c-38 0-68 30-68 68v44c0 38 30 68 68 68h86c26 0 47-19 47-45v-26h-77v-52h108v79c0 52-42 94-94 94H216c-59 0-106-47-106-106v-44c0-58 47-105 106-105h117v42Z"
+    fill="none"
+    stroke="url(#g1)"
+    stroke-width="54"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  />
+</svg>

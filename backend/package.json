@@ -1,0 +1,40 @@
+{
+  "name": "gigvault-backend",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch src/server.ts",
+    "build": "tsc -p tsconfig.json && mkdir -p dist/db && cp src/db/schema.sql dist/db/schema.sql",
+    "start": "node dist/server.js",
+    "circuit:build": "node scripts/build-circuit.mjs",
+    "circuit:build:sh": "bash scripts/build-circuit.sh",
+    "test": "tsx --test test/*.test.mjs",
+    "check:aadhaar": "node scripts/verify-anon-aadhaar.mjs",
+    "vendor": "node scripts/vendor-client-libs.mjs",
+    "aadhaar:testqr": "node scripts/make-test-aadhaar-qr.mjs",
+    "db:reset": "rm -f data/gigvault.db && tsx src/db/migrate.ts"
+  },
+  "dependencies": {
+    "@anon-aadhaar/core": "^2.4.3",
+    "@fastify/cors": "^9.0.1",
+    "better-sqlite3": "^11.10.0",
+    "circomlib": "^2.0.5",
+    "circomlibjs": "^0.1.7",
+    "dotenv": "^16.4.5",
+    "ethers": "^6.17.0",
+    "fastify": "^4.28.1",
+    "jsqr": "^1.4.0",
+    "pino-pretty": "^11.2.2",
+    "qrcode": "^1.5.4",
+    "snarkjs": "^0.7.4",
+    "tweetnacl": "^1.0.3",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@types/better-sqlite3": "^7.6.11",
+    "@types/node": "^22.5.4",
+    "tsx": "^4.19.0",
+    "typescript": "^5.5.4"
+  }
+}

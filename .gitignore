@@ -1,0 +1,11 @@
+node_modules/
+dist/
+data/
+.env
+**/circuits/build/
+**/circuits/ptau/
+artifacts/
+cache/
+typechain-types/
+*.log
+deployments/localhost.json

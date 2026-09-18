@@ -1,0 +1,735 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>GigVault — Work Passport</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,400;0,600;1,400&family=IBM+Plex+Mono:wght@400;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#F4EFE2;
+    --paper-deep:#E8E0CC;
+    --ink:#1A1A17;
+    --navy:#152744;
+    --oxblood:#7B1E2B;
+    --sage:#3F5E48;
+    --rule:#C9BE9F;
+    --shadow:rgba(21,39,68,.10);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif;
+    font-size:15px;line-height:1.55;
+    padding:28px 20px 72px;
+  }
+  .wrap{max-width:680px;margin:0 auto}
+
+  /* ---- masthead ---- */
+  header{border-bottom:2px solid var(--navy);padding-bottom:14px;margin-bottom:8px}
+  h1{
+    font-family:Spectral,Georgia,serif;font-weight:600;
+    font-size:clamp(34px,7vw,52px);line-height:1;margin:0;
+    letter-spacing:-.015em;color:var(--navy);
+  }
+  .sub{font-family:Spectral,Georgia,serif;font-style:italic;color:var(--oxblood);margin:6px 0 0;font-size:16px}
+
+  /* ---- mode switch: tabs as document dividers ---- */
+  nav{display:flex;gap:0;margin:18px 0 26px;border-bottom:1px solid var(--rule)}
+  nav button{
+    font:inherit;font-weight:500;background:none;border:0;
+    border-bottom:3px solid transparent;margin-bottom:-1px;
+    padding:9px 18px 10px;cursor:pointer;color:var(--ink);opacity:.55;
+  }
+  nav button[aria-selected="true"]{opacity:1;border-bottom-color:var(--oxblood);color:var(--navy)}
+  nav button:focus-visible{outline:2px solid var(--navy);outline-offset:2px}
+
+  /* ---- steps ---- */
+  ol.steps{list-style:none;margin:0;padding:0;counter-reset:s}
+  ol.steps li{
+    counter-increment:s;position:relative;padding:0 0 20px 44px;
+    border-left:1px solid var(--rule);margin-left:13px;
+  }
+  ol.steps li:last-child{border-left-color:transparent}
+  ol.steps li::before{
+    content:counter(s,decimal-leading-zero);
+    position:absolute;left:-13px;top:0;width:26px;height:26px;border-radius:50%;
+    background:var(--paper);border:1px solid var(--rule);
+    font-family:"IBM Plex Mono",monospace;font-size:11px;
+    display:grid;place-items:center;color:var(--navy);
+  }
+  ol.steps li[data-done="1"]::before{background:var(--sage);border-color:var(--sage);color:var(--paper);content:"✓"}
+  .steptitle{font-weight:600;color:var(--navy);margin:2px 0 3px}
+  .stepnote{font-size:13.5px;opacity:.72;margin:0 0 9px}
+
+  button.act{
+    font:inherit;font-weight:500;background:var(--navy);color:var(--paper);
+    border:0;padding:9px 17px;border-radius:2px;cursor:pointer;
+  }
+  button.act:disabled{opacity:.35;cursor:not-allowed}
+  button.act:focus-visible{outline:2px solid var(--oxblood);outline-offset:2px}
+  button.ghost{background:none;color:var(--navy);border:1px solid var(--navy)}
+
+  /* ---- disclosure controls ---- */
+  fieldset{border:1px solid var(--rule);padding:12px 14px 14px;margin:0 0 10px;background:var(--paper-deep)}
+  legend{font-family:Spectral,serif;font-style:italic;color:var(--oxblood);padding:0 6px}
+  .row{display:flex;align-items:center;gap:10px;margin:7px 0;flex-wrap:wrap}
+  .row label{min-width:132px;font-size:13.5px}
+  select{font:inherit;padding:4px 7px;border:1px solid var(--rule);background:var(--paper);border-radius:2px}
+  .hint{font-size:12.5px;opacity:.7;margin:9px 0 0;max-width:62ch}
+
+  /* ---- the passport ---- */
+  .passport{
+    background:var(--paper-deep);border:1px solid var(--rule);
+    box-shadow:0 1px 0 var(--shadow),0 10px 26px -18px var(--shadow);
+    padding:22px 22px 0;margin:22px 0 0;position:relative;
+  }
+  .passport .issuer{
+    font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.14em;
+    color:var(--oxblood);margin:0 0 3px;
+  }
+  .passport h2{font-family:Spectral,serif;font-weight:600;font-size:25px;margin:0 0 16px;color:var(--navy)}
+  dl{display:grid;grid-template-columns:1fr 1fr;gap:13px 22px;margin:0 0 18px}
+  dt{font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.1em;color:var(--oxblood);margin:0 0 1px}
+  dd{margin:0;font-family:Spectral,serif;font-size:19px;color:var(--navy)}
+  .mrz{
+    font-family:"IBM Plex Mono",monospace;font-size:12px;line-height:1.5;
+    background:var(--paper);border-top:1px dashed var(--rule);
+    margin:0 -22px;padding:12px 22px;color:var(--ink);
+    overflow-x:auto;white-space:pre;word-break:break-all;
+  }
+  .stamp{
+    position:absolute;top:16px;right:16px;transform:rotate(-8deg);
+    border:2.5px solid var(--sage);color:var(--sage);border-radius:3px;
+    font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.1em;
+    padding:5px 9px;opacity:.85;
+  }
+  .stamp.bad{border-color:var(--oxblood);color:var(--oxblood)}
+
+  /* ---- verdict ---- */
+  .verdict{padding:16px 18px;border-left:4px solid;margin:18px 0 0;background:var(--paper-deep)}
+  .verdict.ok{border-color:var(--sage)}
+  .verdict.no{border-color:var(--oxblood)}
+  .verdict strong{font-family:Spectral,serif;font-size:21px;display:block;margin-bottom:3px}
+  .verdict.ok strong{color:var(--sage)}
+  .verdict.no strong{color:var(--oxblood)}
+
+  .log{
+    font-family:"IBM Plex Mono",monospace;font-size:12px;
+    background:var(--navy);color:#D7E0EC;padding:13px 15px;
+    margin:24px 0 0;max-height:200px;overflow:auto;white-space:pre-wrap;word-break:break-word;
+  }
+  .log:empty{display:none}
+  .err{color:#F0A0A8}
+  textarea{
+    width:100%;font-family:"IBM Plex Mono",monospace;font-size:12px;
+    border:1px solid var(--rule);background:var(--paper);padding:10px;border-radius:2px;min-height:110px;
+  }
+  .hidden{display:none}
+  @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+  @media (max-width:520px){dl{grid-template-columns:1fr}}
+  .cam{margin:10px 0}
+  .cam video{width:100%;max-width:420px;border:1px solid var(--rule);background:#000;border-radius:6px;display:block}
+  #qr-box{margin-top:12px}
+  #qr-canvas{display:block;background:#fff;padding:12px;border:1px solid var(--rule);image-rendering:pixelated}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>GigVault</h1>
+    <p class="sub">A work passport proved by his bank, readable by anyone.</p>
+  </header>
+
+  <nav role="tablist">
+    <button role="tab" id="tab-rider" aria-selected="true" aria-controls="p-rider">Rider</button>
+    <button role="tab" id="tab-lender" aria-selected="false" aria-controls="p-lender">Verifier</button>
+  </nav>
+
+  <!-- ================= RIDER ================= -->
+  <section id="p-rider" role="tabpanel" aria-labelledby="tab-rider">
+    <ol class="steps" id="steps">
+      <li id="s1">
+        <p class="steptitle">Give consent at your bank</p>
+        <p class="stepnote">Your bank sends the record on the Account Aggregator rail. The platform you work for is never asked, and never told.</p>
+        <button class="act" id="b-consent">Give consent</button>
+      </li>
+      <li id="s2">
+        <p class="steptitle">Your bank sends the record</p>
+        <p class="stepnote">Signed by the bank, fetched under the consent you just gave. Nothing here comes from you, so nothing here can be edited by you.</p>
+        <button class="act" id="b-fetch" disabled>Fetch record</button>
+      </li>
+      <li id="s3">
+        <p class="steptitle">Work out what it proves</p>
+        <p class="stepnote">Tenure, weeks paid, monthly income — calculated from the bank record.</p>
+        <button class="act" id="b-derive" disabled>Read the record</button>
+      </li>
+      <li id="s3b">
+        <p class="steptitle">Scan your Aadhaar</p>
+        <p class="stepnote">Point the camera at the Secure QR on mAadhaar or your e-Aadhaar PDF. It is decoded on this device; only your name and a one-way identifier leave it. Skip it and the demo uses a stand-in identity.</p>
+        <div class="row">
+          <button class="act" id="b-aadhaar-scan" disabled>Scan Aadhaar QR</button>
+          <button class="act ghost" id="b-aadhaar-skip" disabled>Skip (demo identity)</button>
+        </div>
+        <div id="aadhaar-cam" class="cam hidden"><video id="aadhaar-video" playsinline muted></video><button class="act ghost" id="b-aadhaar-stop">Stop</button></div>
+        <p class="hint" id="aadhaar-result"></p>
+      </li>
+      <li id="s3c">
+        <p class="steptitle">Confirm your employers</p>
+        <p class="stepnote">We found these counterparties in your bank statement. Select the ones that are actual gig platforms you work for.</p>
+        <div id="payers-list" style="margin-top:10px"></div>
+      </li>
+      <li id="s4">
+        <p class="steptitle">Choose what to show</p>
+        <p class="stepnote">You can always show less than you have earned. You can never show more.</p>
+        <fieldset id="disclosure" disabled>
+          <legend>What this passport will say</legend>
+          <div class="row"><label for="d-tenure">Tenure</label><select id="d-tenure"></select></div>
+          <div class="row"><label for="d-weeks">Weeks paid</label><select id="d-weeks"></select></div>
+          <div class="row"><label for="d-income">Monthly income</label><select id="d-income"></select></div>
+          <p class="hint" id="d-hint">Each menu stops at the highest band your record supports.</p>
+        </fieldset>
+        <button class="act" id="b-issue" disabled>Issue passport</button>
+      </li>
+    </ol>
+
+    <div class="passport hidden" id="card">
+      <div class="stamp" id="card-stamp">ISSUED</div>
+      <p class="issuer">Republic of the Gig Economy</p>
+      <h2>Work Passport</h2>
+      <dl>
+        <div><dt>Holder</dt><dd id="c-holder">—</dd></div>
+        <div><dt>Passport no.</dt><dd id="c-no">—</dd></div>
+        <div><dt>Tenure proved</dt><dd id="c-tenure">—</dd></div>
+        <div><dt>Monthly income</dt><dd id="c-income">—</dd></div>
+        <div><dt>Weeks paid</dt><dd id="c-weeks">—</dd></div>
+        <div><dt>Valid for</dt><dd>Anyone he shows it to</dd></div>
+      </dl>
+      <div class="mrz" id="c-mrz">—</div>
+    </div>
+
+    <div id="handoff" class="hidden">
+      <p class="hint">Show this to the verifier. It carries the proof and the four lines above — no rupee figure, no date of any payment, nothing underneath the claim.</p>
+      <div class="row">
+        <button class="act" id="b-qr">Show QR to verifier</button>
+        <button class="act ghost" id="b-copy">Copy reference</button>
+      </div>
+      <div id="qr-box" class="hidden">
+        <canvas id="qr-canvas"></canvas>
+        <p class="stepnote" id="qr-countdown"></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= LENDER ================= -->
+  <section id="p-lender" role="tabpanel" aria-labelledby="tab-lender" class="hidden">
+    <p class="stepnote">Enter the rider's passport reference. You open a check, the rider approves it on their phone, and the answer comes back true or false. A check is good once and expires in two minutes, so a screenshot of an old one is worth nothing.</p>
+    <div class="row" style="margin:0 0 10px">
+      <button class="act" id="b-scan">Scan passport QR</button>
+      <button class="act ghost" id="b-scan-stop" disabled>Stop camera</button>
+    </div>
+    <div id="scan-cam" class="cam hidden"><video id="scan-video" playsinline muted></video></div>
+    <p class="hint">Or, without a camera: open a check against a pasted reference and have the rider approve it.</p>
+    <textarea id="v-input" placeholder="Paste the rider's passport reference here"></textarea>
+    <div class="row" style="margin-top:10px">
+      <button class="act" id="b-challenge">Open a check</button>
+      <button class="act ghost" id="b-clear">Clear</button>
+    </div>
+
+    <div id="v-pending" class="hidden">
+      <fieldset>
+        <legend>Waiting for the rider</legend>
+        <p class="stepnote" id="v-countdown" style="margin:0 0 10px">This check expires in 120 seconds.</p>
+        <div class="mrz" id="v-nonce" style="margin:0 0 12px;border:1px solid var(--rule);padding:10px"></div>
+        <button class="act" id="b-approve">Approve on rider's phone</button>
+        <p class="hint">On a real two-device demo this half happens on the rider's handset. The signature is made with a key that never left their browser.</p>
+      </fieldset>
+    </div>
+
+    <div id="v-out"></div>
+  </section>
+
+  <div class="log" id="log"></div>
+</div>
+
+<script src="/vendor/jsQR.js"></script>
+<script src="/vendor/qrcode.js"></script>
+<script src="/vendor/ethers.umd.min.js"></script>
+<script src="/aadhaar-qr.js"></script>
+<script>
+const API = location.origin;
+const $ = id => document.getElementById(id);
+const state = { sessionId:null, holder:null, maxTiers:null, tables:null, keys:null, challenge:null, timer:null };
+
+/* ---------- holder key ----------
+   The rider's WALLET. An EVM key generated once on this device and kept in this
+   browser's storage — the rider never sees a seed phrase, never pays gas (the operator
+   submits the mint; presenting is an off-chain signature). The passport is minted TO
+   this address, so ownerOf(tokenId) and the key that signs presentations are one key:
+   "held in his own wallet" is then literally true on chain.
+
+   Privy fits here exactly: its embedded wallet gives you an address and personal_sign
+   after a phone-number login. Replace ensureKeys() with Privy's wallet, keep everything
+   else — the server verifies EIP-191 signatures against the address either way.
+   WALLET_MODE='p256' falls back to the earlier non-extractable WebCrypto key (custodial
+   mint to the operator). */
+const WALLET_MODE = 'evm';
+async function ensureKeys(){
+  if(state.keys) return state.keys;
+  if(WALLET_MODE === 'evm'){
+    let pk = null;
+    try{ pk = localStorage.getItem('gigvault.rider.wallet'); }catch{}
+    const w = pk ? new ethers.Wallet(pk) : ethers.Wallet.createRandom();
+    if(!pk){ try{ localStorage.setItem('gigvault.rider.wallet', w.privateKey); }catch{} }
+    state.keys = { wallet:w, spkiB64: w.address, scheme:'eip191-secp256k1' };
+    log(`Rider wallet ${w.address.slice(0,6)}…${w.address.slice(-4)} on this device (${pk?'restored':'created'}). The passport will be minted to it. No seed phrase, no gas.`);
+    return state.keys;
+  }
+  const kp = await crypto.subtle.generateKey({ name:'ECDSA', namedCurve:'P-256' }, false, ['sign','verify']);
+  const spki = await crypto.subtle.exportKey('spki', kp.publicKey);
+  state.keys = { kp, spkiB64: b64(spki), scheme:'ecdsa-p256-sha256' };
+  log('Presentation key created in this browser (P-256, non-extractable). Passport will be minted custodially.');
+  return state.keys;
+}
+function b64(buf){ return btoa(String.fromCharCode(...new Uint8Array(buf))); }
+
+/* Must match presentationPayload() in src/lib/holderKey.ts byte for byte. If these two
+   ever drift, every signature fails with nothing but "invalid" to go on. */
+function presentationPayload({sessionId, challengeId, nonce, commitment}){
+  return [
+    'GigVault presentation v1',
+    `session=${sessionId}`,
+    `challenge=${challengeId}`,
+    `nonce=${nonce}`,
+    `commitment=${commitment}`,
+  ].join('\n');
+}
+
+async function signPayload(payload){
+  const keys = await ensureKeys();
+  if(keys.wallet) return keys.wallet.signMessage(payload); // EIP-191 personal_sign; Privy: wallet.signMessage / provider personal_sign
+  const { kp } = keys;
+  const sig = await crypto.subtle.sign(
+    { name:'ECDSA', hash:'SHA-256' }, kp.privateKey, new TextEncoder().encode(payload)
+  );
+  return b64(sig); // raw r||s; server verifies with dsaEncoding 'ieee-p1363'
+}
+
+function log(msg, isErr){
+  const el = $('log');
+  const t = new Date().toLocaleTimeString();
+  el.innerHTML += `<span class="${isErr?'err':''}">[${t}] ${msg}</span>\n`;
+  el.scrollTop = el.scrollHeight;
+}
+function done(id){ $(id).dataset.done = '1'; }
+
+async function api(path, opts){
+  const res = await fetch(API + path, {
+    headers:{'Content-Type':'application/json'},
+    ...opts,
+  });
+  const text = await res.text();
+  let body; try{ body = JSON.parse(text); }catch{ body = { raw:text }; }
+  if(!res.ok){
+    const code = body.code || body.error || res.status;
+    const msg  = body.message || body.raw || 'Request failed';
+    throw new Error(`${code} — ${msg}`);
+  }
+  return body;
+}
+
+/* ---- tabs ---- */
+function show(which){
+  const rider = which === 'rider';
+  $('tab-rider').setAttribute('aria-selected', rider);
+  $('tab-lender').setAttribute('aria-selected', !rider);
+  $('p-rider').classList.toggle('hidden', !rider);
+  $('p-lender').classList.toggle('hidden', rider);
+}
+$('tab-rider').onclick = () => show('rider');
+$('tab-lender').onclick = () => show('lender');
+
+/* ---- step 1: consent ---- */
+$('b-consent').onclick = async e => {
+  e.target.disabled = true;
+  try{
+    const r = await api('/consent', { method:'POST', body: JSON.stringify({
+      customerIdentifier: 'ramesh.kumar', purpose: 'work-passport'
+    })});
+        state.sessionId = r.sessionId || r.session_id;
+    state.consentId = r.consent?.consentId || r.consentId;
+    done('s1'); $('b-fetch').disabled = false;
+    log(`Consent recorded. Session ${state.sessionId}`);
+  }catch(err){ e.target.disabled = false; log(err.message, true); }
+};
+
+/* ---- step 2: fetch ---- */
+$('b-fetch').onclick = async e => {
+  e.target.disabled = true;
+  try{
+    const r = await api('/fetch', { method:'POST', body: JSON.stringify({
+      sessionId: state.sessionId, consentId: state.consentId
+    })});    state.holder = r?.accountHolderName || r?.accountHolder?.name || r?.statement?.accountHolder?.name || 'Ramesh Kumar';
+    done('s2'); $('b-derive').disabled = false;
+    log(`Bank record received and signature verified. Account holder: ${state.holder}`);
+  }catch(err){ e.target.disabled = false; log(err.message, true); }
+};
+
+/* ---- step 3: derive ---- */
+$('b-derive').onclick = async e => {
+  e.target.disabled = true;
+  try{
+    const r = await api('/derive', { method:'POST', body: JSON.stringify({ sessionId: state.sessionId })});
+    const d = r.derived || r;
+    log(`Record read: ${d.weeksPaid} weeks paid, ${d.tenureMonths} months, monthly income ${d.monthlyIncome}.`);
+    // These raw figures are shown to the RIDER only — it is their own data. They are
+    // never sent to a verifier; the verifier sees bands.
+    state.maxTiers = r.maxTiers || null;
+    await loadTables(d);
+    if(r.payers) renderPayers(r.payers);
+    done('s3');
+    $('b-aadhaar-scan').disabled = false; $('b-aadhaar-skip').disabled = false;
+    $('disclosure').disabled = false;
+    $('b-issue').disabled = false;
+  }catch(err){ e.target.disabled = false; log(err.message, true); }
+};
+
+function renderPayers(payers) {
+  const el = $('payers-list');
+  el.innerHTML = '';
+  payers.forEach(p => {
+    const checks = [];
+    if (p.signals.directionAsymmetry > 0.9) checks.push('✓ Pure inflow');
+    else checks.push('✗ Bidirectional (you also send money here)');
+    if (p.signals.cadence > 0.6) checks.push('✓ Regular cadence');
+    else checks.push('⚠️ Irregular cadence');
+    if (p.signals.handleType === 'merchant') checks.push('✓ Merchant VPA');
+    else if (p.signals.handleType === 'personal') checks.push('? Personal VPA pattern');
+
+    const checked = p.confidenceTier === 'high' ? 'checked' : '';
+    el.innerHTML += `
+      <label class="payer-card" style="display:flex; border:1px solid var(--rule); padding:10px; margin-bottom:10px; background:var(--paper-deep); align-items:flex-start; cursor:pointer">
+        <input type="checkbox" name="confirmedPayer" value="${esc(p.displayName)}" ${checked} style="margin-right:12px; margin-top:4px">
+        <div>
+          <strong style="display:block; color:var(--navy)">${esc(p.displayName)}</strong>
+          <div style="font-size:11.5px; font-family:'IBM Plex Mono',monospace; opacity:0.8; margin-bottom:4px">Confidence: ${p.confidenceTier.toUpperCase()}</div>
+          <div style="font-size:12.5px; opacity:0.85">${checks.map(c => `<div>${c}</div>`).join('')}</div>
+        </div>
+      </label>
+    `;
+  });
+}
+
+/* Band menus. Built from the same enumerated tables the circuit encodes, capped at the
+   highest band the rider's own figures clear — so the UI cannot offer an over-claim in
+   the first place. The server re-checks anyway; this is convenience, not enforcement. */
+const TABLES = {
+  tenure: { list:[0,6,12,24,36],              fmt:v=>`at least ${v} months` },
+  weeks:  { list:[0,26,52,100,150],           fmt:v=>`at least ${v} weeks` },
+  income: { list:[0,10000,15000,18000,25000], fmt:v=>`at least ₹${v.toLocaleString('en-IN')} a month` },
+};
+function maxIdx(value, list){ let i=0; list.forEach((b,k)=>{ if(value>=b) i=k; }); return i; }
+
+async function loadTables(d){
+  const caps = {
+    tenure: maxIdx(d.tenureMonths, TABLES.tenure.list),
+    weeks:  maxIdx(d.weeksPaid,    TABLES.weeks.list),
+    income: maxIdx(d.monthlyIncome,TABLES.income.list),
+  };
+  state.caps = caps;
+  for(const [key, cap] of Object.entries(caps)){
+    const sel = $('d-' + key); sel.innerHTML = '';
+    TABLES[key].list.forEach((b,i) => {
+      if(i > cap) return;
+      const o = document.createElement('option');
+      o.value = i; o.textContent = TABLES[key].fmt(b);
+      if(i === cap) o.selected = true;
+      sel.appendChild(o);
+    });
+  }
+  $('d-hint').textContent =
+    'Each menu stops at the highest band your record supports. Showing a lower band is always allowed and always safe — it tells the verifier less, never anything false.';
+}
+
+/* ---- step 4: issue ---- */
+$('b-issue').onclick = async e => {
+  e.target.disabled = true;
+  const picked = {
+    tenureTierIdx: +$('d-tenure').value,
+    weeksTierIdx:  +$('d-weeks').value,
+    incomeTierIdx: +$('d-income').value,
+  };
+  const maximal = state.caps &&
+    picked.tenureTierIdx === state.caps.tenure &&
+    picked.weeksTierIdx  === state.caps.weeks  &&
+    picked.incomeTierIdx === state.caps.income;
+
+  try{
+    const keys = await ensureKeys();
+    const confirmedPayers = Array.from(document.querySelectorAll('input[name="confirmedPayer"]:checked')).map(el => el.value);
+    const r = await api('/issue', { method:'POST', body: JSON.stringify({
+      sessionId: state.sessionId,
+      holderPublicKey: keys.spkiB64,
+      holderKeyScheme: keys.scheme,
+      confirmedPayers,
+      anonAadhaar: state.aadhaar ? {
+        nullifier: state.aadhaar.nullifier, proof: {}, publicSignals: [],
+        decodedName: state.aadhaar.name,          // decoded from the scanned Secure QR
+      } : {
+        nullifier: 'demo-nullifier-' + state.sessionId,
+        proof: {}, publicSignals: [],
+        decodedName: state.holder,                // demo identity (Skip was pressed)
+      },
+      ...(maximal ? {} : { tierClaims: picked }),
+    })});
+    done('s4');
+    state.commitment = r.commitment;
+    renderCard(r);
+    if(r.chain) log(`On chain: token #${r.chain.tokenId} minted to ${r.chain.holder.slice(0,6)}…${r.chain.holder.slice(-4)}${r.chain.custodial?' (custodial — operator holds it)':' (the rider\'s own wallet)'} · tx ${r.chain.txHash.slice(0,10)}…`);
+    log(`Passport issued. Disclosure: ${r.disclosure || (maximal?'maximal':'selective')}.`);
+  }catch(err){
+    e.target.disabled = false;
+    log(err.message, true);
+    if(/CIRCUIT_NOT_BUILT/.test(err.message)){
+      log('Run "npm run circuit:build" in backend/ — the circuit has not been compiled yet.', true);
+    }
+  }
+};
+
+function renderCard(r){
+  const c = r.card || {};
+  $('c-holder').textContent = state.holder || 'Ramesh Kumar';
+  $('c-no').textContent     = r.chain ? `#${r.chain.tokenId} · ${r.chain.holder.slice(0,6)}…${r.chain.holder.slice(-4)}` : '0x' + String(r.commitment||'').slice(0,4).padEnd(4,'0') + '…' + String(r.commitment||'').slice(-4);
+  $('c-tenure').textContent = c.tenure || '—';
+  $('c-weeks').textContent  = c.weeksPaid || '—';
+  $('c-income').textContent = c.monthlyIncome || '—';
+  const surname = (state.holder||'RAMESH KUMAR').toUpperCase().split(' ');
+  const line1 = `GV<IND<${(surname[1]||'KUMAR')}<<${surname[0]||'RAMESH'}`.padEnd(44,'<').slice(0,44);
+  const t = r.tierClaims || {};
+  const line2 = `TEN${t.tenureTierIdx}<WEEKS${t.weeksTierIdx}<INC${t.incomeTierIdx}<${String(r.commitment||'').slice(0,12)}`.padEnd(44,'<').slice(0,44);
+  $('c-mrz').textContent = line1 + '\n' + line2;
+  $('card').classList.remove('hidden');
+  $('handoff').classList.remove('hidden');
+}
+
+$('b-copy').onclick = async () => {
+  const ref = JSON.stringify({ sessionId: state.sessionId });
+  try{ await navigator.clipboard.writeText(ref); log('Copied. Paste it in the Verifier tab.'); }
+  catch{ $('v-input').value = ref; log('Clipboard unavailable — reference placed in the Verifier tab.'); }
+  $('v-input').value = ref;
+};
+
+/* ---- verifier ---- */
+$('b-clear').onclick = () => {
+  $('v-input').value=''; $('v-out').innerHTML='';
+  $('v-pending').classList.add('hidden');
+  clearInterval(state.timer); state.challenge = null;
+};
+
+/* Verifier opens the check. Freshness has to be guaranteed to the party relying on it,
+   so the nonce comes from here, not from the rider. A presentation the rider minted
+   themselves would prove only that they own a clock. */
+$('b-challenge').onclick = async () => {
+  const raw = $('v-input').value.trim();
+  $('v-out').innerHTML = '';
+  if(!raw){
+    $('v-out').innerHTML = verdict(false,'Nothing to check','Paste the reference the rider showed you.');
+    return;
+  }
+  let sid = raw;
+  try{ const p = JSON.parse(raw); sid = p.sessionId || p.session_id || raw; }catch{}
+
+  try{
+    const c = await api('/challenge', { method:'POST', body: JSON.stringify({
+      sessionId: sid, verifierLabel: 'Platform B'
+    })});
+    state.challenge = { ...c, sessionId: sid };
+    $('v-nonce').textContent = 'challenge ' + c.challengeId + '\nnonce ' + c.nonce;
+    $('v-pending').classList.remove('hidden');
+    startCountdown(c.expiresInSeconds);
+    log(`Check opened. Good once, expires in ${c.expiresInSeconds}s.`);
+  }catch(err){
+    $('v-out').innerHTML = verdict(false,'No passport found', err.message);
+    log(err.message, true);
+  }
+};
+
+function startCountdown(seconds){
+  clearInterval(state.timer);
+  let left = seconds;
+  const tick = () => {
+    if(left <= 0){
+      clearInterval(state.timer);
+      $('v-countdown').textContent = 'This check has expired. Open a new one.';
+      $('b-approve').disabled = true;
+      return;
+    }
+    $('v-countdown').textContent = `This check expires in ${left} seconds.`;
+    left--;
+  };
+  $('b-approve').disabled = false;
+  tick();
+  state.timer = setInterval(tick, 1000);
+}
+
+/* The rider's half. On a two-device demo this button lives on the handset. */
+$('b-approve').onclick = async e => {
+  const ch = state.challenge;
+  if(!ch) return;
+  if(!state.keys || !state.commitment){
+    $('v-out').innerHTML = verdict(false,'No passport on this device','Issue a passport in the Rider tab first — the signing key is created there.');
+    return;
+  }
+  e.target.disabled = true;
+  try{
+    const signature = await signPayload(presentationPayload({
+      sessionId: ch.sessionId,
+      challengeId: ch.challengeId,
+      nonce: ch.nonce,
+      commitment: state.commitment,
+    }));
+    const r = await api('/present', { method:'POST', body: JSON.stringify({
+      sessionId: ch.sessionId, challengeId: ch.challengeId, signature
+    })});
+    clearInterval(state.timer);
+    $('v-pending').classList.add('hidden');
+    renderVerdict(r);
+    log('Rider approved. Signature checked against the key registered at issue.');
+  }catch(err){
+    e.target.disabled = false;
+    $('v-out').innerHTML = verdict(false,'Refused', err.message);
+    log(err.message, true);
+  }
+};
+
+function renderVerdict(r){
+  if(r.revoked || r.admitted === false){
+    $('v-out').innerHTML = verdict(false,'Revoked','This passport has been revoked by its issuer.');
+    return;
+  }
+  const c = r.card || {};
+  $('v-out').innerHTML = `
+    <div class="passport" style="margin-top:18px">
+      <div class="stamp">ADMITTED</div>
+      <p class="issuer">Verified · RBI AA consent · holder signature checked</p>
+      <h2>Work Passport</h2>
+      <dl>
+        <div><dt>Tenure proved</dt><dd>${esc(c.tenure)}</dd></div>
+        <div><dt>Monthly income</dt><dd>${esc(c.monthlyIncome)}</dd></div>
+        <div><dt>Weeks paid</dt><dd>${esc(c.weeksPaid)}</dd></div>
+        <div><dt>Issued</dt><dd>${esc((r.issuedAt||'').slice(0,10))}</dd></div>
+      </dl>
+      ${r.disclosedPayers && r.disclosedPayers.length ? `<div style="margin:16px 0"><dt style="font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.1em;color:var(--oxblood);margin:0 0 4px">Disclosed Payers</dt><ul style="margin:0;padding:0 0 0 16px;color:var(--navy);font-weight:500;font-family:Spectral,serif">${r.disclosedPayers.map(p => `<li>${esc(p)}</li>`).join('')}</ul></div>` : ''}
+      <div class="mrz">commitment ${esc(r.commitment)}</div>
+    </div>
+    <p class="hint">This is everything the passport discloses. There is no rupee figure underneath it to read. The check just used is now spent — presenting again needs a new one.</p>`;
+}
+
+function verdict(ok, title, detail){
+  return `<div class="verdict ${ok?'ok':'no'}"><strong>${esc(title)}</strong>${esc(detail)}</div>`;
+}
+function esc(s){ return String(s??'—').replace(/[&<>"]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m])); }
+
+/* ================= CAMERA =================
+   Secure-context rule: getUserMedia works on http://localhost and on trusted https,
+   nowhere else. A phone opening http://<laptop-ip>:4000 gets NO camera. Demo topology
+   that survives this: everything on the laptop at localhost, scanning QRs shown on a
+   phone screen; or expose the laptop over an https tunnel for the phone. */
+async function startScanner(videoEl, onText){
+  if(!isSecureContext){ throw new Error('Camera needs a secure context: open this page at http://localhost or over trusted https.'); }
+  if(!navigator.mediaDevices?.getUserMedia) throw new Error('This browser has no camera API.');
+  const stream = await navigator.mediaDevices.getUserMedia({ video:{ facingMode:'environment', width:{ideal:1280}, height:{ideal:720} } });
+  videoEl.srcObject = stream; await videoEl.play();
+  const detector = ('BarcodeDetector' in window) ? new BarcodeDetector({ formats:['qr_code'] }) : null;
+  const canvas = document.createElement('canvas'); const ctx = canvas.getContext('2d', { willReadFrequently:true });
+  let alive = true, busy = false;
+  const stop = () => { alive = false; stream.getTracks().forEach(t=>t.stop()); videoEl.srcObject = null; };
+  const tick = async () => {
+    if(!alive) return;
+    if(!busy && videoEl.readyState >= 2){
+      busy = true;
+      try{
+        let text = null;
+        if(detector){ const codes = await detector.detect(videoEl); if(codes.length) text = codes[0].rawValue; }
+        else{
+          canvas.width = videoEl.videoWidth; canvas.height = videoEl.videoHeight;
+          ctx.drawImage(videoEl, 0, 0);
+          const img = ctx.getImageData(0, 0, canvas.width, canvas.height);
+          const code = jsQR(img.data, img.width, img.height, { inversionAttempts:'dontInvert' });
+          if(code) text = code.data;
+        }
+        if(text){ stop(); onText(text); return; }
+      }catch(err){ log('scanner: ' + err.message, true); }
+      busy = false;
+    }
+    requestAnimationFrame(tick);
+  };
+  requestAnimationFrame(tick);
+  return { stop };
+}
+
+/* ---- step 3b: Aadhaar (Entry 2) ---- */
+state.aadhaar = null; let aadhaarScanner = null;
+$('b-aadhaar-scan').onclick = async () => {
+  $('aadhaar-cam').classList.remove('hidden'); $('aadhaar-result').textContent = 'Looking for the Secure QR…';
+  try{
+    aadhaarScanner = await startScanner($('aadhaar-video'), async text => {
+      $('aadhaar-cam').classList.add('hidden');
+      try{
+        const a = await AadhaarQR.decodeAadhaarQr(text, { nullifierSeed:'gigvault-devhack' });
+        state.aadhaar = { name:a.name, nullifier:a.nullifier };
+        $('aadhaar-result').textContent = `Decoded on device: ${a.name} · ${a.state} ${a.pincode} · ref …${a.referenceLast4}. Signature bytes present (${a.signature.length}). Identifier ${a.nullifier.slice(0,14)}… — nothing else leaves this phone.`;
+        const bank = (state.holder||'').trim().toUpperCase().replace(/\s+/g,' ');
+        if(bank && bank !== a.name.trim().toUpperCase().replace(/\s+/g,' ')) log(`Name on Aadhaar (${a.name}) does not match the bank record (${state.holder}) — /issue will refuse. That is the point.`, true);
+        done('s3b');
+      }catch(err){ $('aadhaar-result').textContent = err.message; log(err.message, true); }
+    });
+  }catch(err){ $('aadhaar-cam').classList.add('hidden'); $('aadhaar-result').textContent = err.message; log(err.message, true); }
+};
+$('b-aadhaar-stop').onclick = () => { aadhaarScanner?.stop(); $('aadhaar-cam').classList.add('hidden'); $('aadhaar-result').textContent=''; };
+$('b-aadhaar-skip').onclick = () => { state.aadhaar = null; $('aadhaar-result').textContent = 'Using the demo identity (mock nullifier, bank name).'; done('s3b'); };
+
+/* ---- rider: passport as QR (Entry 4, PRESENT) ---- */
+$('b-qr').onclick = async () => {
+  try{
+    const t = await api('/present/ticket', { method:'POST', body: JSON.stringify({ sessionId: state.sessionId })});
+    const signature = await signPayload(qrPayload({ sessionId: state.sessionId, ticketId: t.ticketId, commitment: t.commitment }));
+    const text = `GV1|${state.sessionId}|${t.ticketId}|${signature}`;
+    await QRCode.toCanvas($('qr-canvas'), text, { errorCorrectionLevel:'M', scale:6, margin:1 });
+    $('qr-box').classList.remove('hidden');
+    let left = t.expiresInSeconds; clearInterval(state.qrTimer);
+    const tick = () => { $('qr-countdown').textContent = left>0 ? `Good for one scan. Expires in ${left}s.` : 'Expired — tap again for a fresh one.'; if(left--<=0) clearInterval(state.qrTimer); };
+    tick(); state.qrTimer = setInterval(tick, 1000);
+    log(`QR shown: ${text.length} chars, signed with the key in this browser, single use.`);
+  }catch(err){ log(err.message, true); }
+};
+/* Must match qrPresentationPayload() in src/lib/holderKey.ts byte for byte. */
+function qrPayload({sessionId, ticketId, commitment}){
+  return ['GigVault qr v1', `session=${sessionId}`, `ticket=${ticketId}`, `commitment=${commitment}`].join('\n');
+}
+
+/* ---- verifier: scan (Entry 4, ADMIT) ---- */
+let passScanner = null;
+$('b-scan').onclick = async () => {
+  $('v-out').innerHTML=''; $('scan-cam').classList.remove('hidden'); $('b-scan-stop').disabled = false;
+  try{
+    passScanner = await startScanner($('scan-video'), async text => {
+      $('scan-cam').classList.add('hidden'); $('b-scan-stop').disabled = true;
+      try{
+        const r = await api('/admit/scan', { method:'POST', body: JSON.stringify({ qr: text, verifierLabel:'Platform B (camera)' })});
+        if(r.admitted){ renderVerdict({ ...r, commitment: (r.tokenId ? 'token #' + r.tokenId : 'off-chain') + (r.holder?.address ? ' · owner ' + r.holder.address.slice(0,6) + '…' + r.holder.address.slice(-4) + (r.holder.ownsToken ? ' ✓ presenter owns it' : '') : ' · custodial') }); log(`ADMITTED in ${r.ms} ms.`); }
+        else { $('v-out').innerHTML = verdict(false,'Refused', r.reason || 'not admitted'); log(`Refused: ${r.reason}`, true); }
+      }catch(err){ $('v-out').innerHTML = verdict(false,'Refused', err.message); log(err.message, true); }
+    });
+  }catch(err){ $('scan-cam').classList.add('hidden'); $('b-scan-stop').disabled = true; $('v-out').innerHTML = verdict(false,'No camera', err.message); log(err.message, true); }
+};
+$('b-scan-stop').onclick = () => { passScanner?.stop(); $('scan-cam').classList.add('hidden'); $('b-scan-stop').disabled = true; };
+
+log('Ready. Backend at ' + API);
+</script>
+</body>
+</html>
