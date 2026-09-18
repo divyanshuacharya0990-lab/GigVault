@@ -206,9 +206,7 @@ export function Verify() {
               </div>
               <button
                 onClick={() => {
-                  const windowPrint = window.open('', '', 'width=800,height=600');
-                  if (!windowPrint) return;
-                  windowPrint.document.write(`
+                  const htmlString = `
                     <html>
                       <head>
                         <title>GigVault Receipt</title>
@@ -255,15 +253,23 @@ export function Verify() {
                         </div>
                       </body>
                     </html>
-                  `);
-                  windowPrint.document.close();
-                  windowPrint.focus();
+                  `;
+
+                  const iframe = document.createElement('iframe');
+                  iframe.style.display = 'none';
+                  document.body.appendChild(iframe);
                   
-                  // Wait for the window to render before printing, and don't immediately close it!
+                  iframe.contentWindow?.document.open();
+                  iframe.contentWindow?.document.write(htmlString);
+                  iframe.contentWindow?.document.close();
+
+                  // Wait for the iframe content to be fully parsed
                   setTimeout(() => {
-                    windowPrint.print();
-                    // Optional: Close window after printing
-                    // windowPrint.onafterprint = () => windowPrint.close();
+                    iframe.contentWindow?.focus();
+                    iframe.contentWindow?.print();
+                    setTimeout(() => {
+                      document.body.removeChild(iframe);
+                    }, 2000);
                   }, 250);
                 }}
                 className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded bg-zinc-800 hover:bg-zinc-700 text-zinc-300 text-xs font-mono transition-colors"
