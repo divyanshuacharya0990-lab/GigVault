@@ -258,8 +258,13 @@ export function Verify() {
                   `);
                   windowPrint.document.close();
                   windowPrint.focus();
-                  windowPrint.print();
-                  windowPrint.close();
+                  
+                  // Wait for the window to render before printing, and don't immediately close it!
+                  setTimeout(() => {
+                    windowPrint.print();
+                    // Optional: Close window after printing
+                    // windowPrint.onafterprint = () => windowPrint.close();
+                  }, 250);
                 }}
                 className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded bg-zinc-800 hover:bg-zinc-700 text-zinc-300 text-xs font-mono transition-colors"
               >
