@@ -205,7 +205,62 @@ export function Verify() {
                 </div>
               </div>
               <button
-                onClick={() => window.print()}
+                onClick={() => {
+                  const windowPrint = window.open('', '', 'width=800,height=600');
+                  if (!windowPrint) return;
+                  windowPrint.document.write(`
+                    <html>
+                      <head>
+                        <title>GigVault Receipt</title>
+                        <style>
+                          body { font-family: monospace; padding: 2rem; color: #000; }
+                          .receipt-header { border-bottom: 2px solid black; padding-bottom: 1rem; margin-bottom: 1.5rem; text-align: center; }
+                          .receipt-header h1 { font-size: 1.5rem; text-transform: uppercase; letter-spacing: 0.1em; margin: 0; }
+                          .receipt-header p { font-size: 0.875rem; text-transform: uppercase; letter-spacing: 0.1em; margin-top: 0.25rem; }
+                          .section { margin-bottom: 1.5rem; }
+                          .section h3 { font-weight: bold; text-transform: uppercase; border-bottom: 1px solid #ccc; padding-bottom: 0.25rem; margin-bottom: 0.5rem; font-size: 1rem; }
+                          .section p, .section li { font-size: 0.875rem; margin: 0.25rem 0; }
+                          ul { list-style: none; padding: 0; margin: 0; }
+                          .footer { margin-top: 3rem; text-align: center; font-size: 0.75rem; color: #666; text-transform: uppercase; letter-spacing: 0.1em; }
+                        </style>
+                      </head>
+                      <body>
+                        <div class="receipt-header">
+                          <h1>GigVault</h1>
+                          <p>Secure Verification Receipt</p>
+                        </div>
+                        <div class="section">
+                          <h3>Verification Status</h3>
+                          <p style="font-size: 1.125rem;">✅ PASSED / ADMITTED</p>
+                          <p style="color: #666;">Date: ${new Date().toLocaleString()}</p>
+                        </div>
+                        <div class="section">
+                          <h3>Underwriting Requirements Met</h3>
+                          <ul>
+                            <li>• Tenure: &ge; ${scanResult?.requirements?.minTenureMonths} Months (Actual: ${scanResult?.admittedPayload?.tenureMonths})</li>
+                            <li>• Monthly Income: &ge; ₹${scanResult?.requirements?.minIncome} (Actual: ₹${scanResult?.admittedPayload?.monthlyIncome})</li>
+                            <li>• Weeks Paid: &ge; 100 Weeks (Actual: ${scanResult?.admittedPayload?.weeksPaid})</li>
+                          </ul>
+                        </div>
+                        <div class="section">
+                          <h3>Cryptographic Attestation</h3>
+                          <ul style="word-break: break-all;">
+                            <li><strong>Token ID:</strong> ${scanResult?.chain?.tokenId || "N/A"}</li>
+                            <li><strong>Commitment Hash:</strong> ${scanResult?.admittedPayload?.commitment || "N/A"}</li>
+                            <li><strong>Session ID:</strong> ${scanResult?.sessionId || "N/A"}</li>
+                          </ul>
+                        </div>
+                        <div class="footer">
+                          End of receipt<br/>Verify at gigvault.dev
+                        </div>
+                      </body>
+                    </html>
+                  `);
+                  windowPrint.document.close();
+                  windowPrint.focus();
+                  windowPrint.print();
+                  windowPrint.close();
+                }}
                 className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded bg-zinc-800 hover:bg-zinc-700 text-zinc-300 text-xs font-mono transition-colors"
               >
                 <Printer className="w-3.5 h-3.5" />
@@ -274,45 +329,6 @@ export function Verify() {
         </AnimatePresence>
       )}
 
-      {/* Hidden Receipt for Printing (Moved outside of motion.div to avoid transform context issues) */}
-      {verified && scanResult && (
-        <div id="print-receipt" className="hidden p-8 font-mono text-black bg-white">
-          <div className="border-b-2 border-black pb-4 mb-6 text-center">
-            <h1 className="text-2xl font-bold uppercase tracking-widest">GigVault</h1>
-            <p className="text-sm uppercase tracking-widest mt-1">Secure Verification Receipt</p>
-          </div>
-
-          <div className="space-y-6">
-            <div>
-              <h3 className="font-bold uppercase border-b border-gray-300 pb-1 mb-2">Verification Status</h3>
-              <p className="text-lg">✅ PASSED / ADMITTED</p>
-              <p className="text-sm text-gray-600 mt-1">Date: {new Date().toLocaleString()}</p>
-            </div>
-
-            <div>
-              <h3 className="font-bold uppercase border-b border-gray-300 pb-1 mb-2">Underwriting Requirements Met</h3>
-              <ul className="space-y-1 text-sm">
-                <li>• Tenure: ≥ {scanResult.requirements?.minTenureMonths} Months (Actual: {scanResult.admittedPayload?.tenureMonths})</li>
-                <li>• Monthly Income: ≥ ₹{scanResult.requirements?.minIncome} (Actual: ₹{scanResult.admittedPayload?.monthlyIncome})</li>
-                <li>• Weeks Paid: ≥ 100 Weeks (Actual: {scanResult.admittedPayload?.weeksPaid})</li>
-              </ul>
-            </div>
-
-            <div>
-              <h3 className="font-bold uppercase border-b border-gray-300 pb-1 mb-2">Cryptographic Attestation</h3>
-              <ul className="space-y-1 text-sm text-gray-800 break-all">
-                <li><strong>Token ID:</strong> {scanResult.chain?.tokenId || "N/A"}</li>
-                <li><strong>Commitment Hash:</strong> {scanResult.admittedPayload?.commitment || "N/A"}</li>
-                <li><strong>Session ID:</strong> {scanResult.sessionId || "N/A"}</li>
-              </ul>
-            </div>
-          </div>
-          
-          <div className="mt-12 text-center text-xs text-gray-500 uppercase tracking-widest">
-            End of receipt<br/>Verify at gigvault.dev
-          </div>
-        </div>
-      )}
     </div>
   );
 }
