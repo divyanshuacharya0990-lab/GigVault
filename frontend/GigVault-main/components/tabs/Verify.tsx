@@ -47,22 +47,14 @@ export function Verify() {
         if (parts.length !== 4 || parts[0] !== 'GV1') {
            throw new Error("Invalid QR format");
         }
-        const res = await api.scanTicket({
-           sessionId: parts[1],
-           ticketId: parts[2],
-           signature: parts[3]
-        });
+        const res = await api.admitScan(qrInput);
         setScanResult(res);
       } else {
         if (!passportInput.trim()) {
           throw new Error("Please provide a valid Passport ID");
         }
-        let tokenId = passportInput;
-        if (tokenId.startsWith("0x")) {
-            tokenId = parseInt(tokenId, 16).toString();
-        }
-        const res = await api.admitPassport(tokenId);
-        setScanResult(res);
+        // Demo limitation: backend does not support direct token lookup yet.
+        throw new Error("Direct Passport ID lookup is unsupported in this demo. Please use the 'Scan QR' tab.");
       }
       
       clearInterval(interval);
@@ -235,17 +227,18 @@ export function Verify() {
                         <div class="section">
                           <h3>Underwriting Requirements Met</h3>
                           <ul>
-                            <li>• Tenure: &ge; ${scanResult?.requirements?.minTenureMonths} Months (Actual: ${scanResult?.admittedPayload?.tenureMonths})</li>
-                            <li>• Monthly Income: &ge; ₹${scanResult?.requirements?.minIncome} (Actual: ₹${scanResult?.admittedPayload?.monthlyIncome})</li>
-                            <li>• Weeks Paid: &ge; 100 Weeks (Actual: ${scanResult?.admittedPayload?.weeksPaid})</li>
+                            <li>• Tenure Proved: ${scanResult?.card?.tenure || "N/A"}</li>
+                            <li>• Monthly Income Floor: ${scanResult?.card?.monthlyIncome || "N/A"}</li>
+                            <li>• Weeks Paid: ${scanResult?.card?.weeksPaid || "N/A"}</li>
+                            ${scanResult?.disclosedPayers?.length ? `<li>• Verified Payers: ${scanResult.disclosedPayers.join(", ")}</li>` : ""}
                           </ul>
                         </div>
                         <div class="section">
                           <h3>Cryptographic Attestation</h3>
                           <ul style="word-break: break-all;">
-                            <li><strong>Token ID:</strong> ${scanResult?.chain?.tokenId || "N/A"}</li>
-                            <li><strong>Commitment Hash:</strong> ${scanResult?.admittedPayload?.commitment || "N/A"}</li>
+                            <li><strong>Token ID:</strong> ${scanResult?.tokenId || scanResult?.chain?.tokenId || "N/A"}</li>
                             <li><strong>Session ID:</strong> ${scanResult?.sessionId || "N/A"}</li>
+                            <li><strong>Contract:</strong> ${scanResult?.chain?.passportAddress || "0xa513E6E4b8f2a923D98304ec87F64353C4D5C853"}</li>
                           </ul>
                         </div>
                         <div class="footer">
@@ -294,18 +287,18 @@ export function Verify() {
               <div className="grid sm:grid-cols-3 gap-3 font-mono text-xs">
                 <div className="bg-zinc-950/40 border border-zinc-800 p-3 rounded-lg">
                   <div className="text-zinc-500">Tenure Proved</div>
-                  <div className="text-white font-bold mt-1">&ge; {scanResult.requirements.minTenureMonths} Months</div>
-                  <div className="text-emerald-400 text-[11px] mt-0.5">✓ {scanResult.admittedPayload.tenureMonths} Months on Rail</div>
+                  <div className="text-white font-bold mt-1">{scanResult?.card?.tenure || "Verified"}</div>
+                  <div className="text-emerald-400 text-[11px] mt-0.5">✓ On-Rail Proof</div>
                 </div>
                 <div className="bg-zinc-950/40 border border-zinc-800 p-3 rounded-lg">
                   <div className="text-zinc-500">Monthly Income Floor</div>
-                  <div className="text-white font-bold mt-1">&ge; ₹{scanResult.requirements.minIncome}</div>
-                  <div className="text-emerald-400 text-[11px] mt-0.5">✓ ₹{scanResult.admittedPayload.monthlyIncome} (Safe Payers)</div>
+                  <div className="text-white font-bold mt-1">{scanResult?.card?.monthlyIncome || "Verified"}</div>
+                  <div className="text-emerald-400 text-[11px] mt-0.5">✓ Safe Platform Payouts</div>
                 </div>
                 <div className="bg-zinc-950/40 border border-zinc-800 p-3 rounded-lg">
                   <div className="text-zinc-500">Weeks Paid</div>
-                  <div className="text-white font-bold mt-1">&ge; 100 Weeks</div>
-                  <div className="text-emerald-400 text-[11px] mt-0.5">✓ {scanResult.admittedPayload.weeksPaid} / 156 Weeks</div>
+                  <div className="text-white font-bold mt-1">{scanResult?.card?.weeksPaid || "Verified"}</div>
+                  <div className="text-emerald-400 text-[11px] mt-0.5">✓ Consistent Cadence</div>
                 </div>
               </div>
             </div>

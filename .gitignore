@@ -9,3 +9,6 @@ cache/
 typechain-types/
 *.log
 deployments/localhost.json
+*.tsbuildinfo
+.next/
+.turbo/

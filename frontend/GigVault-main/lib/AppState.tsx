@@ -6,8 +6,8 @@ import { ethers } from "ethers";
 interface AppState {
   sessionId: string | null;
   setSessionId: (id: string | null) => void;
-  holderWallet: ethers.Wallet | null;
-  setHolderWallet: (wallet: ethers.Wallet | null) => void;
+  holderWallet: any | null;
+  setHolderWallet: (wallet: any | null) => void;
   ticketId: string | null;
   setTicketId: (id: string | null) => void;
   commitment: string | null;
@@ -20,7 +20,7 @@ const AppStateContext = createContext<AppState | undefined>(undefined);
 
 export function AppStateProvider({ children }: { children: React.ReactNode }) {
   const [sessionId, setSessionId] = useState<string | null>(null);
-  const [holderWallet, setHolderWallet] = useState<ethers.Wallet | null>(null);
+  const [holderWallet, setHolderWallet] = useState<any | null>(null);
   const [ticketId, setTicketId] = useState<string | null>(null);
   const [commitment, setCommitment] = useState<string | null>(null);
   const [passportData, setPassportData] = useState<any>(null);
