@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="./frontend/GigVault-main/public/logo.png" alt="GigVault Logo" width="120" />
+  <img src="./frontend/GigVault-main/public/icon.svg" alt="GigVault Logo" width="120" />
   <h1>GigVault</h1>
   <p><strong>A Zero-Knowledge Identity and Verifiable Credential Platform for the Gig Economy</strong></p>
   <p>Built for DSU DEVHACK 3.0</p>
@@ -33,18 +33,28 @@ GigVault addresses the core challenges of trust, privacy, and frictionless onboa
 
 ## 📸 Demo
 
-*(Note: Replace these placeholders with the actual screenshots generated during your final demo presentation)*
-
 ### Zero-Knowledge Aadhaar e-KYC (No Data Leaves Device)
 > *The user uploads a digital Aadhaar Secure QR. The proof is generated using Groth16 zk-SNARKs directly in the browser.*
 <p align="center">
-  <img src="https://raw.githubusercontent.com/anon-aadhaar/anon-aadhaar/main/docs/static/img/hero.png" width="800" alt="ZK Proof Generation" />
+  <img src="./docs/login.png" width="800" alt="ZK Proof Generation" />
 </p>
 
 ### GigVault Dashboard & Credential Ledger
 > *Once verified, the user enters the vault where their credentials (income, reputation, state residency) are displayed securely.*
 <p align="center">
-  <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&q=80&w=1000" width="800" alt="GigVault Dashboard" />
+  <img src="./docs/dashboard.png" width="800" alt="GigVault Dashboard" />
+</p>
+
+### Present Work Passport
+> *The user can present a time-limited ephemeral QR code or direct on-chain Passport ID to verifiers.*
+<p align="center">
+  <img src="./docs/present.png" width="800" alt="Present QR" />
+</p>
+
+### Verifier Terminal
+> *Verifiers can scan the ephemeral QR or query the on-chain Passport ID to instantly cryptographically verify the user's credentials.*
+<p align="center">
+  <img src="./docs/verify.png" width="800" alt="Verifier Terminal" />
 </p>
 
 ---
