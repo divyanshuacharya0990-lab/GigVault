@@ -8,7 +8,7 @@
 
 ---
 
-## 🏆 Round 3: Final Demo & Pitch Focus
+## 🌟 Platform Highlights
 
 GigVault addresses the core challenges of trust, privacy, and frictionless onboarding in the modern gig economy. By leveraging **Zero-Knowledge Proofs (ZKPs)** via the Anon Aadhaar protocol, we enable instant, cryptographically verifiable identity checks without exposing sensitive personal data.
 
