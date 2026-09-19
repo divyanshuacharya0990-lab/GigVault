@@ -36,31 +36,31 @@ GigVault addresses the core challenges of trust, privacy, and frictionless onboa
 ### Zero-Knowledge Aadhaar e-KYC (No Data Leaves Device)
 > *The user uploads a digital Aadhaar Secure QR. The proof is generated using Groth16 zk-SNARKs directly in the browser.*
 <p align="center">
-  <img src="./docs/image1.png" width="800" alt="ZK Proof Generation" />
+  <img src="./docs/login.png" width="800" alt="ZK Proof Generation" />
 </p>
 
 ### GigVault Dashboard & Credential Ledger
 > *Once verified, the user enters the vault where their credentials (income, reputation, state residency) are displayed securely.*
 <p align="center">
-  <img src="./docs/image2.png" width="800" alt="GigVault Dashboard" />
+  <img src="./docs/dashboard.png" width="800" alt="GigVault Dashboard" />
 </p>
 
 ### Issue Work Passport (Consent Rail)
 > *The user issues a cryptographic Work Passport specifying which credentials to share.*
 <p align="center">
-  <img src="./docs/image3.png" width="800" alt="Issue Work Passport" />
+  <img src="./docs/issue-1.png" width="800" alt="Issue Work Passport" />
 </p>
 
 ### Bank Transaction History
 > *Derived income metrics are extracted locally without exposing raw bank statements.*
 <p align="center">
-  <img src="./docs/image4.png" width="800" alt="Bank Transaction History" />
+  <img src="./docs/issue-2.png" width="800" alt="Bank Transaction History" />
 </p>
 
 ### Present Work Passport
 > *The user successfully mints and presents a time-limited ephemeral QR code or direct on-chain Passport ID to verifiers.*
 <p align="center">
-  <img src="./docs/image5.png" width="800" alt="Minted Work Passport" />
+  <img src="./docs/issue-3.png" width="800" alt="Minted Work Passport" />
 </p>
 
 ---
