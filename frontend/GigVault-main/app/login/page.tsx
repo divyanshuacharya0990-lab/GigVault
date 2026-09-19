@@ -24,7 +24,7 @@ export default function LoginPage() {
         localStorage.setItem("gigvault_kyc_name", "RAMESH KUMAR");
         
         // Store the proof for on-chain verification if needed
-        if (anonAadhaar.anonAadhaarProofs && anonAadhaar.anonAadhaarProofs.length > 0) {
+        if (anonAadhaar.anonAadhaarProofs && Object.keys(anonAadhaar.anonAadhaarProofs).length > 0) {
           localStorage.setItem(
             "gigvault_anon_aadhaar_proof",
             JSON.stringify(anonAadhaar.anonAadhaarProofs[0])
