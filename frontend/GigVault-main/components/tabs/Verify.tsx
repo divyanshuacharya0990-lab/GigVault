@@ -1,9 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ShieldCheck, CheckCircle2, Scan, Printer, Search, AlertCircle, ChevronDown, Terminal } from "lucide-react";
 import { api } from "../../lib/api";
+import { Html5QrcodeScanner } from "html5-qrcode";
 
 export function Verify() {
   const [method, setMethod] = useState<"qr" | "id">("qr");
@@ -14,6 +15,45 @@ export function Verify() {
   const [error, setError] = useState("");
   const [checkedSteps, setCheckedSteps] = useState<number[]>([]);
   const [scanResult, setScanResult] = useState<any>(null);
+  
+  const scannerRef = useRef<Html5QrcodeScanner | null>(null);
+
+  useEffect(() => {
+    if (method === "qr" && !verified && !scanning) {
+      // Small timeout to ensure DOM is ready
+      const timer = setTimeout(() => {
+        if (!scannerRef.current && document.getElementById("reader")) {
+          const scanner = new Html5QrcodeScanner(
+            "reader",
+            { fps: 10, qrbox: { width: 250, height: 250 } },
+            /* verbose= */ false
+          );
+          scannerRef.current = scanner;
+          
+          scanner.render(
+            (decodedText) => {
+              setQrInput(decodedText);
+              // auto verify when scanned
+              // But we have state in a closure, so we just set the input
+              // The user can click "Verify Payload" or we could try to auto trigger
+              // For safety in this demo, let them click it or we can auto-trigger it
+            },
+            (err) => {
+              // ignore regular scan errors (no qr found)
+            }
+          );
+        }
+      }, 100);
+      
+      return () => {
+        clearTimeout(timer);
+        if (scannerRef.current) {
+          scannerRef.current.clear().catch(console.error);
+          scannerRef.current = null;
+        }
+      };
+    }
+  }, [method, verified, scanning]);
 
   const chainChecks = [
     "AA-signed consent artefact validated against expiry",
@@ -53,8 +93,8 @@ export function Verify() {
         if (!passportInput.trim()) {
           throw new Error("Please provide a valid Passport ID");
         }
-        // Demo limitation: backend does not support direct token lookup yet.
-        throw new Error("Direct Passport ID lookup is unsupported in this demo. Please use the 'Scan QR' tab.");
+        const res = await api.admitLookup(passportInput.trim());
+        setScanResult(res);
       }
       
       clearInterval(interval);
@@ -109,15 +149,29 @@ export function Verify() {
       {!verified && !scanning && (
         <div className="bg-zinc-900/50 border border-zinc-800 rounded-2xl p-8 text-center space-y-5">
           {method === "qr" ? (
-            <div className="space-y-3 max-w-md mx-auto text-left">
-               <label className="text-xs font-mono text-zinc-400">Paste QR Payload</label>
-               <input
-                 type="text"
-                 value={qrInput}
-                 onChange={(e) => setQrInput(e.target.value)}
-                 placeholder="GV1|..."
-                 className="w-full bg-zinc-950 border border-zinc-800 rounded-lg px-3.5 py-2 text-sm font-mono text-white focus:outline-none focus:border-violet-500"
-               />
+            <div className="space-y-4 w-full max-w-md mx-auto text-left">
+               <label className="text-xs font-mono text-zinc-400">Scan QR Code</label>
+               
+               <div className="relative bg-zinc-950 border border-zinc-800 rounded-xl overflow-hidden min-h-[300px] flex flex-col items-center justify-center p-4">
+                 <div id="reader" className="w-full max-w-[300px]"></div>
+                 {!scanning && !qrInput && (
+                   <p className="text-xs text-zinc-500 font-mono text-center mt-2">
+                     Point your camera at the GigVault QR code, or paste the payload below if the camera is unavailable.
+                   </p>
+                 )}
+               </div>
+
+               <div className="pt-2">
+                 <label className="text-[10px] uppercase tracking-wider font-mono text-zinc-600 mb-1 block">Manual Fallback / Payload</label>
+                 <input
+                   type="text"
+                   value={qrInput}
+                   onChange={(e) => setQrInput(e.target.value)}
+                   placeholder="GV1|..."
+                   className="w-full bg-zinc-950 border border-zinc-800 rounded-lg px-3.5 py-2 text-sm font-mono text-white focus:outline-none focus:border-violet-500"
+                 />
+               </div>
+
                {error && (
                  <div className="flex items-center gap-1.5 text-xs text-red-400 font-mono">
                    <AlertCircle className="w-3.5 h-3.5" />

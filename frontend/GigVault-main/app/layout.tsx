@@ -31,6 +31,7 @@ export const metadata: Metadata = {
 };
 
 import { AppStateProvider } from "../lib/AppState";
+import { Providers } from "../lib/Providers";
 
 export default function RootLayout({
   children,
@@ -40,9 +41,11 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${display.variable} ${body.variable} ${mono.variable}`}>
       <body className="font-body bg-bg-primary text-text-primary antialiased">
-        <AppStateProvider>
-          {children}
-        </AppStateProvider>
+        <Providers>
+          <AppStateProvider>
+            {children}
+          </AppStateProvider>
+        </Providers>
       </body>
     </html>
   );

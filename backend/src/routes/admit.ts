@@ -59,4 +59,55 @@ export function registerAdmitRoute(app: FastifyInstance) {
       disclosedPayers: result && row.confirmed_payers_json ? JSON.parse(row.confirmed_payers_json) : [] 
     });
   });
+
+  app.post('/admit/lookup', async (req, reply) => {
+    const body = z.object({ tokenId: z.string().min(1), verifierLabel: z.string().optional() }).parse(req.body);
+
+    const row = db
+      .prepare('SELECT session_id, proof_json, public_signals_json, revoked, token_id, commitment, confirmed_payers_json, tenure_tier_idx, weeks_tier_idx, income_tier_idx, holder_public_key, holder_key_scheme, issued_at FROM proofs WHERE token_id = ? OR session_id = ?')
+      .get(body.tokenId, body.tokenId) as any;
+
+    if (!row) {
+      reply.status(404).send({ error: 'NOT_FOUND', message: 'No passport found with that ID' });
+      return;
+    }
+
+    let result = false;
+    let reason = null;
+    if (row.revoked) {
+      reason = 'REVOKED';
+    } else {
+      result = await verifyProofLocally(JSON.parse(row.proof_json), JSON.parse(row.public_signals_json));
+    }
+
+    let chain: Awaited<ReturnType<typeof onChainStatus>> | null = null;
+    if (chainEnabled() && row.token_id) {
+      chain = await onChainStatus(row.token_id, row.commitment);
+      if (chain.revoked) { result = false; reason = 'REVOKED_ON_CHAIN'; }
+      else if (!chain.commitmentMatches) { result = false; reason = 'COMMITMENT_MISMATCH'; }
+    }
+
+    db.prepare(
+      'INSERT INTO admissions (session_id, verifier_label, result) VALUES (?, ?, ?)',
+    ).run(row.session_id, body.verifierLabel ?? 'id-lookup', result ? 1 : 0);
+
+    const { tierLabel } = await import('../lib/tiers.js');
+    const { isEvmScheme } = await import('../lib/holderKey.js');
+
+    reply.send({ 
+      sessionId: row.session_id, 
+      admitted: result, 
+      reason,
+      tokenId: row.token_id,
+      issuedAt: row.issued_at,
+      chain,
+      holder: isEvmScheme(row.holder_key_scheme) ? { address: row.holder_public_key, ownsToken: chain ? chain.owner.toLowerCase() === String(row.holder_public_key).toLowerCase() : null } : { custodial: true },
+      disclosedPayers: result && row.confirmed_payers_json ? JSON.parse(row.confirmed_payers_json) : [],
+      card: result ? {
+        tenure: tierLabel('tenure', row.tenure_tier_idx),
+        weeksPaid: tierLabel('weeks', row.weeks_tier_idx),
+        monthlyIncome: tierLabel('income', row.income_tier_idx),
+      } : null,
+    });
+  });
 }

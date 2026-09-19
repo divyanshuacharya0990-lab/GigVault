@@ -81,3 +81,216 @@ body {
     padding: 2rem !important;
   }
 }
+
+/* ========================================================
+   Anon Aadhaar SDK — Dark Theme Overrides
+   Match the GigVault premium dark UI.
+   ======================================================== */
+
+/* Main modal overlay */
+[data-testid="anon-aadhaar-modal"],
+div[class*="Modal"] {
+  backdrop-filter: blur(12px) !important;
+}
+
+/* Modal container — dark glassmorphism */
+[data-testid="anon-aadhaar-modal"] > div,
+div[class*="ModalContent"],
+div[class*="modal"] > div {
+  background: #0f0d18 !important;
+  border: 1px solid rgba(139, 92, 246, 0.15) !important;
+  border-radius: 1.5rem !important;
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6), 0 0 40px rgba(139, 92, 246, 0.08) !important;
+  color: #e4e4e7 !important;
+}
+
+/* All text inside the SDK modal */
+[data-testid="anon-aadhaar-modal"] p,
+[data-testid="anon-aadhaar-modal"] span,
+[data-testid="anon-aadhaar-modal"] label,
+[data-testid="anon-aadhaar-modal"] div,
+[data-testid="anon-aadhaar-modal"] h1,
+[data-testid="anon-aadhaar-modal"] h2,
+[data-testid="anon-aadhaar-modal"] h3 {
+  color: #d4d4d8 !important;
+}
+
+/* Links */
+[data-testid="anon-aadhaar-modal"] a {
+  color: #8b5cf6 !important;
+}
+
+/* File upload area */
+[data-testid="anon-aadhaar-modal"] input[type="file"],
+[data-testid="anon-aadhaar-modal"] [class*="upload"],
+[data-testid="anon-aadhaar-modal"] [class*="file"] {
+  background: #1a1625 !important;
+  border: 1px dashed rgba(139, 92, 246, 0.3) !important;
+  border-radius: 0.75rem !important;
+  color: #a1a1aa !important;
+}
+
+/* Buttons inside the modal */
+[data-testid="anon-aadhaar-modal"] button {
+  background: linear-gradient(135deg, #7c3aed, #6d28d9) !important;
+  color: #fff !important;
+  border: none !important;
+  border-radius: 0.75rem !important;
+  font-weight: 600 !important;
+  transition: all 0.2s !important;
+}
+
+[data-testid="anon-aadhaar-modal"] button:hover {
+  background: linear-gradient(135deg, #8b5cf6, #7c3aed) !important;
+  box-shadow: 0 0 20px rgba(139, 92, 246, 0.3) !important;
+}
+
+/* Close/X button */
+[data-testid="anon-aadhaar-modal"] button[class*="close"],
+[data-testid="anon-aadhaar-modal"] button[aria-label="close"] {
+  background: transparent !important;
+  color: #71717a !important;
+}
+
+/* Error/success text */
+[data-testid="anon-aadhaar-modal"] [class*="error"],
+[data-testid="anon-aadhaar-modal"] [style*="red"] {
+  color: #f87171 !important;
+}
+
+[data-testid="anon-aadhaar-modal"] [class*="success"],
+[data-testid="anon-aadhaar-modal"] [style*="green"] {
+  color: #34d399 !important;
+}
+
+/* Progress / loading states */
+[data-testid="anon-aadhaar-modal"] [class*="progress"],
+[data-testid="anon-aadhaar-modal"] [class*="loading"] {
+  background: #1a1625 !important;
+}
+
+/* Generic fallback: any white backgrounds inside the modal */
+[data-testid="anon-aadhaar-modal"] div[style*="background: white"],
+[data-testid="anon-aadhaar-modal"] div[style*="background-color: white"],
+[data-testid="anon-aadhaar-modal"] div[style*="background: rgb(255"],
+[data-testid="anon-aadhaar-modal"] div[style*="background-color: rgb(255"] {
+  background: #0f0d18 !important;
+}
+
+/* The SDK trigger button on our login page — styled violet */
+#anon-aadhaar-btn,
+button[id*="anon-aadhaar"] {
+  background: linear-gradient(135deg, #7c3aed, #6d28d9) !important;
+  color: #fff !important;
+  border: none !important;
+  border-radius: 0.75rem !important;
+  padding: 0.75rem 1.5rem !important;
+  font-weight: 600 !important;
+  font-size: 0.875rem !important;
+  cursor: pointer !important;
+  transition: all 0.2s !important;
+  box-shadow: 0 4px 15px rgba(124, 58, 237, 0.3) !important;
+}
+
+#anon-aadhaar-btn:hover,
+button[id*="anon-aadhaar"]:hover {
+  background: linear-gradient(135deg, #8b5cf6, #7c3aed) !important;
+  box-shadow: 0 6px 25px rgba(139, 92, 246, 0.4) !important;
+  transform: translateY(-1px) !important;
+}
+
+/* AGGRESSIVE OVERRIDE FOR ANON AADHAAR MODAL (Hackathon fixes) */
+.anon-aadhaar-wrapper div[style*="background: white"],
+.anon-aadhaar-wrapper div[style*="background-color: white"],
+.anon-aadhaar-wrapper div[style*="background: rgb(255"],
+.anon-aadhaar-wrapper div[style*="background-color: rgb(255"] {
+  background: #0f0d18 !important;
+  border: 1px solid rgba(139, 92, 246, 0.15) !important;
+  border-radius: 1.5rem !important;
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6), 0 0 40px rgba(139, 92, 246, 0.08) !important;
+  color: #e4e4e7 !important;
+}
+
+/* Modal text overrides */
+.anon-aadhaar-wrapper div[style*="background: white"] *,
+.anon-aadhaar-wrapper div[style*="background-color: white"] *,
+.anon-aadhaar-wrapper div[style*="background: rgb(255"] * {
+  color: #d4d4d8 !important;
+}
+
+/* Override the QR image / logo backgrounds if any */
+.anon-aadhaar-wrapper img,
+.anon-aadhaar-wrapper svg {
+  background-color: transparent !important;
+}
+
+/* Upload zone */
+.anon-aadhaar-wrapper input[type="file"],
+.anon-aadhaar-wrapper [class*="upload"] {
+  background: #1a1625 !important;
+  border: 1px dashed rgba(139, 92, 246, 0.3) !important;
+  border-radius: 0.75rem !important;
+  color: #a1a1aa !important;
+}
+
+/* Primary buttons */
+.anon-aadhaar-wrapper div[style*="background"] button {
+  background: linear-gradient(135deg, #7c3aed, #6d28d9) !important;
+  color: #fff !important;
+  border: none !important;
+  border-radius: 0.75rem !important;
+  font-weight: 600 !important;
+}
+
+/* Fallback for the overlay backdrop if it's rendered here */
+.anon-aadhaar-wrapper div[style*="rgba(0, 0, 0, 0.2)"] {
+  background-color: rgba(0, 0, 0, 0.6) !important;
+  backdrop-filter: blur(8px) !important;
+}
+
+/* ========================================================
+   HTML5 QR Code Scanner Overrides
+   ======================================================== */
+#reader {
+  border: none !important;
+  background: transparent !important;
+}
+#reader video {
+  border-radius: 0.75rem !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5) !important;
+  max-width: 100% !important;
+}
+#reader img {
+  display: none !important; /* Hide the weird default scanning overlay if any */
+}
+#reader button {
+  background: linear-gradient(135deg, #7c3aed, #6d28d9) !important;
+  color: #fff !important;
+  border: none !important;
+  border-radius: 0.5rem !important;
+  font-weight: 500 !important;
+  padding: 0.5rem 1rem !important;
+  margin: 0.5rem !important;
+  cursor: pointer !important;
+  font-size: 0.875rem !important;
+  transition: all 0.2s !important;
+}
+#reader button:hover {
+  background: linear-gradient(135deg, #8b5cf6, #7c3aed) !important;
+  box-shadow: 0 0 15px rgba(139, 92, 246, 0.4) !important;
+}
+#reader a {
+  color: #8b5cf6 !important;
+  text-decoration: none !important;
+}
+#reader span, #reader div, #reader select {
+  color: #a1a1aa !important;
+  font-family: inherit !important;
+}
+#reader select {
+  background: #1a1625 !important;
+  border: 1px solid #272332 !important;
+  border-radius: 0.5rem !important;
+  padding: 0.25rem 0.5rem !important;
+  color: #f8fafc !important;
+}

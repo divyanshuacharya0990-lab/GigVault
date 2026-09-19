@@ -51,6 +51,9 @@ export const api = {
   admitScan: (qr: string, verifierLabel?: string) => 
     fetchAPI("/admit/scan", { qr, verifierLabel }),
     
+  admitLookup: (tokenId: string, verifierLabel?: string) => 
+    fetchAPI("/admit/lookup", { tokenId, verifierLabel }),
+    
   revoke: (sessionId: string, reason?: string) => 
     fetchAPI("/revoke", { sessionId, reason }),
 };
