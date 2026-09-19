@@ -41,7 +41,7 @@ GigVault re-engineers traditional underwriting by plugging directly into the hea
 
 ## 🌟 Overall Impact & Innovation
 
-While GigVault is deeply rooted in Blockchain and FinTech, its architecture and vision are designed to win across all general evaluation criteria:
+Beyond its core technical foundation in Blockchain and FinTech, GigVault is built to deliver massive societal impact through a production-ready, consumer-grade platform:
 
 - **Massive Real-World Impact:** We are building a public good for 50M+ gig workers, solving a tangible, immediate problem (credit invisibility and onboarding friction) rather than a theoretical one.
 - **Exceptional UX/UI:** We prioritize a consumer-grade, glassmorphism design system because decentralized tech should never feel clunky. 
