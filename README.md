@@ -12,6 +12,8 @@
 
 ## 🚀 The Vision: Why GigVault?
 
+> **"Aadhaar made identity portable. UPI made money portable. Nobody has made work portable."**
+
 The modern gig economy is broken. Over **50 million gig workers** generate billions in economic value, yet they remain invisible to traditional finance. Their reputation and income data are siloed within centralized platforms (Uber, Swiggy, etc.), leaving them unable to access fair credit or port their reputation to new platforms without redundant, multi-day background checks.
 
 **GigVault** solves this by intersecting **FinTech (Open Banking)** and **Blockchain (Zero-Knowledge Proofs)**. We transform raw, fragmented banking data into a **cryptographically verifiable, privacy-preserving Soulbound Work Passport**. 
