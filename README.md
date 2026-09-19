@@ -3,6 +3,7 @@
   <h1>GigVault</h1>
   <p><strong>A Zero-Knowledge Identity and Verifiable Credential Platform for the Gig Economy</strong></p>
   <p>Built for DSU DEVHACK 3.0</p>
+  <p><strong>Live Demo:</strong> <a href="https://gigvault-1.onrender.com/">GigVault — The missing rail.</a></p>
 </div>
 
 ---
