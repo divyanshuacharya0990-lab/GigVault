@@ -45,16 +45,22 @@ GigVault addresses the core challenges of trust, privacy, and frictionless onboa
   <img src="./docs/dashboard.png" width="800" alt="GigVault Dashboard" />
 </p>
 
-### Present Work Passport
-> *The user can present a time-limited ephemeral QR code or direct on-chain Passport ID to verifiers.*
+### Issue Work Passport (Consent Rail)
+> *The user issues a cryptographic Work Passport specifying which credentials to share.*
 <p align="center">
-  <img src="./docs/present.png" width="800" alt="Present QR" />
+  <img src="./docs/issue-1.png" width="800" alt="Issue Work Passport" />
 </p>
 
-### Verifier Terminal
-> *Verifiers can scan the ephemeral QR or query the on-chain Passport ID to instantly cryptographically verify the user's credentials.*
+### Bank Transaction History
+> *Derived income metrics are extracted locally without exposing raw bank statements.*
 <p align="center">
-  <img src="./docs/verify.png" width="800" alt="Verifier Terminal" />
+  <img src="./docs/issue-2.png" width="800" alt="Bank Transaction History" />
+</p>
+
+### Present Work Passport
+> *The user successfully mints and presents a time-limited ephemeral QR code or direct on-chain Passport ID to verifiers.*
+<p align="center">
+  <img src="./docs/issue-3.png" width="800" alt="Minted Work Passport" />
 </p>
 
 ---
