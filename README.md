@@ -1,7 +1,7 @@
 <div align="center">
   <img src="./frontend/GigVault-main/public/icon.svg" alt="GigVault Logo" width="120" />
   <h1>GigVault</h1>
-  <p><strong>Bridging Web2 FinTech and Web3 Blockchain to give Gig Workers portable, Zero-Knowledge credit and identity.</strong></p>
+  <p><strong>Bridging FinTech and Blockchain to give Gig Workers portable, Zero-Knowledge credit and identity.</strong></p>
   <p>🏆 <em>Built for DSU DEVHACK 3.0</em> | <strong>Domains: Blockchain & FinTech</strong></p>
   <p>
     <a href="https://gigvault-1.onrender.com/"><strong>🔴 Live Demo: GigVault — The Missing Rail</strong></a>
@@ -18,16 +18,16 @@ The modern gig economy is broken. Over **50 million gig workers** generate billi
 
 ---
 
-## ⛓️ Domain 1: Blockchain & Web3
+## ⛓️ Domain 1: Blockchain
 
-GigVault acts as the ultimate trust bridge between off-chain Web2 data and on-chain Web3 utility. 
+GigVault acts as the ultimate trust bridge between off-chain data and on-chain utility. 
 By utilizing **ZK-SNARKs (Groth16)**, we bring traditional identity on-chain without the privacy risks.
 
 - 🛡️ **Zero-Knowledge KYC:** We integrate the **Anon Aadhaar** protocol. Users prove their identity (Age > 18, State Residency, Gender) *locally on their device*. No biometric data or Aadhaar numbers ever hit our servers, but the resulting proof is cryptographically guaranteed.
 - 🪙 **Soulbound Work Passports (SBTs):** Once a worker's income and identity are verified, GigVault mints a non-transferable Soulbound Token. This acts as their universal, on-chain CV.
-- 🏦 **Uncollateralized DeFi Lending:** By bringing verified Web2 income data on-chain in a privacy-preserving way, GigVault enables decentralized lending protocols to issue under-collateralized loans to gig workers based purely on cryptographic reputation.
+- 🏦 **Uncollateralized DeFi Lending:** By bringing verified income data on-chain in a privacy-preserving way, GigVault enables decentralized lending protocols to issue under-collateralized loans to gig workers based purely on cryptographic reputation.
 
-## 💳 Domain 2: FinTech & Open Banking
+## 💳 Domain 2: FinTech
 
 GigVault re-engineers traditional underwriting by plugging directly into the heart of modern FinTech infrastructure (India Stack).
 
