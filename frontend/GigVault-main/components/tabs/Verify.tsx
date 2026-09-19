@@ -153,9 +153,26 @@ export function Verify() {
                <label className="text-xs font-mono text-zinc-400">Scan QR Code</label>
                
                <div className="relative bg-zinc-950 border border-zinc-800 rounded-xl overflow-hidden min-h-[300px] flex flex-col items-center justify-center p-4">
+                 <style>{`
+                   #reader { border: none !important; background: transparent !important; }
+                   #reader * { color: #a1a1aa !important; border-color: #27272a !important; }
+                   #reader__dashboard_section_csr button, #html5-qrcode-button-camera-permission, #html5-qrcode-button-camera-start, #html5-qrcode-button-camera-stop {
+                     background-color: #18181b !important;
+                     color: #fff !important;
+                     border: 1px solid #3f3f46 !important;
+                     border-radius: 0.5rem !important;
+                     padding: 0.375rem 0.75rem !important;
+                     font-size: 0.75rem !important;
+                     margin-top: 0.5rem !important;
+                     cursor: pointer !important;
+                   }
+                   #reader__dashboard_section_csr button:hover { background-color: #27272a !important; }
+                   #reader video { border-radius: 0.75rem !important; border: 1px solid #27272a !important; width: 100% !important; }
+                   #html5-qrcode-anchor-scan-type-change { color: #8b5cf6 !important; text-decoration: none !important; }
+                 `}</style>
                  <div id="reader" className="w-full max-w-[300px]"></div>
                  {!scanning && !qrInput && (
-                   <p className="text-xs text-zinc-500 font-mono text-center mt-2">
+                   <p className="text-xs text-zinc-500 font-mono text-center mt-4">
                      Point your camera at the GigVault QR code, or paste the payload below if the camera is unavailable.
                    </p>
                  )}
