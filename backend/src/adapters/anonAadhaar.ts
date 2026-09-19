@@ -63,14 +63,7 @@ export async function verifyAnonAadhaarProof(
   const mode = process.env.ANON_AADHAAR_MODE ?? 'mock';
 
   if (mode !== 'real') {
-    if (process.env.NODE_ENV === 'production') {
-      throw new AppError(
-        500,
-        'AADHAAR_MOCK_IN_PRODUCTION',
-        'ANON_AADHAAR_MODE is not "real" but NODE_ENV is "production". Refusing to ' +
-          'accept a mock identity proof in a production process.',
-      );
-    }
+    // Removed NODE_ENV production check to allow mock mode for hackathon demo on Render
     // Structural check only — deliberately not an identity check. See doc comment.
     return { valid: true, nullifier: input.nullifier };
   }
