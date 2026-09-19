@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import Header from "@/components/Header";
 import BackgroundGlow from "@/components/BackgroundGlow";
 import TabNav from "@/components/TabNav";
@@ -13,7 +14,22 @@ import ForgedProof from "@/components/tabs/ForgedProof";
 import TrustLadder from "@/components/tabs/TrustLadder";
 
 export default function Home() {
+  const router = useRouter();
   const [activeTab, setActiveTab] = useState<string>("overview");
+  const [isAuth, setIsAuth] = useState<boolean>(false);
+
+  useEffect(() => {
+    const auth = localStorage.getItem("gigvault_auth");
+    if (!auth) {
+      router.push("/login");
+    } else {
+      setIsAuth(true);
+    }
+  }, [router]);
+
+  if (!isAuth) {
+    return null; // Or a loading spinner
+  }
 
   return (
    <main className="min-h-screen bg-transparent text-zinc-100 relative overflow-hidden flex flex-col font-sans">

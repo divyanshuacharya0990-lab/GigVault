@@ -166,26 +166,10 @@ export function BankTransactionHistory({
   onBack,
   onContinue,
 }: BankTransactionHistoryProps) {
-  // Set of active VPAs/counterparties selected as income
-  const [selectedPayers, setSelectedPayers] = useState<Set<string>>(
-    new Set(["SWIGGY PAYMENT", "ZOMATO HYPERPURE"])
+  // Auto-select verified platform payouts based on G3/G4 pass
+  const selectedPayers = new Set(
+    STATEMENT_TRANSACTIONS.filter(t => t.crossRefVerdict === "PASS" && t.type === "CREDIT").map(t => t.description)
   );
-  const [activeLookupTx, setActiveLookupTx] = useState<TransactionItem | null>(null);
-
-  const togglePayer = (name: string, type: "CREDIT" | "DEBIT") => {
-    // Debits cannot be selected
-    if (type === "DEBIT") return;
-
-    setSelectedPayers((prev) => {
-      const next = new Set(prev);
-      if (next.has(name)) {
-        next.delete(name);
-      } else {
-        next.add(name);
-      }
-      return next;
-    });
-  };
 
   // Calculate recognized credits
   const creditIncomeTxns = STATEMENT_TRANSACTIONS.filter(
@@ -395,14 +379,12 @@ export function BankTransactionHistory({
                           <span>G1 Blocked</span>
                         </span>
                       ) : !isLowConfidence ? (
-                        <button
-                          onClick={() => togglePayer(t.description, t.type)}
-                          className={`text-[10px] px-2.5 py-1 rounded-full border transition-all inline-flex items-center gap-1.5 ${
+                        <span
+                          className={`text-[10px] px-2.5 py-1 rounded-full border inline-flex items-center gap-1.5 ${
                             isSelected
-                              ? "bg-violet-500/20 border-violet-500/40 text-violet-300 hover:bg-violet-500/30 shadow-sm"
-                              : "bg-zinc-900 border-zinc-800 text-zinc-400 hover:border-zinc-700 hover:text-zinc-200"
+                              ? "bg-violet-500/20 border-violet-500/40 text-violet-300 shadow-sm"
+                              : "bg-zinc-900/60 border-zinc-800/60 text-zinc-600"
                           }`}
-                          title={`Toggle ${t.description}`}
                         >
                           {isSelected ? (
                             <>
@@ -411,20 +393,18 @@ export function BankTransactionHistory({
                             </>
                           ) : (
                             <>
-                              <Plus className="w-3 h-3 text-zinc-400" />
-                              <span>Add Platform</span>
+                              <Lock className="w-3 h-3 text-zinc-600" />
+                              <span>G4 Blocked</span>
                             </>
                           )}
-                        </button>
+                        </span>
                       ) : (
-                        <button
-                          onClick={() => togglePayer(t.description, t.type)}
-                          className={`text-[10px] px-2.5 py-1 rounded-full border transition-all inline-flex items-center gap-1.5 ${
+                        <span
+                          className={`text-[10px] px-2.5 py-1 rounded-full border inline-flex items-center gap-1.5 ${
                             isSelected
-                              ? "bg-amber-500/20 border-amber-500/40 text-amber-300 hover:bg-amber-500/30 shadow-sm"
-                              : "bg-zinc-900 border-zinc-800 text-amber-500/70 hover:border-amber-500/40 hover:text-amber-400"
+                              ? "bg-amber-500/20 border-amber-500/40 text-amber-300 shadow-sm"
+                              : "bg-zinc-900/60 border-zinc-800/60 text-zinc-600"
                           }`}
-                          title={`Toggle ${t.description} (Low confidence source)`}
                         >
                           {isSelected ? (
                             <>
@@ -433,11 +413,11 @@ export function BankTransactionHistory({
                             </>
                           ) : (
                             <>
-                              <AlertTriangle className="w-3 h-3 text-amber-400" />
-                              <span>Personal / Unlisted</span>
+                              <Lock className="w-3 h-3 text-zinc-600" />
+                              <span>G4 Blocked</span>
                             </>
                           )}
-                        </button>
+                        </span>
                       )}
                     </td>
                   </tr>
@@ -479,7 +459,7 @@ export function BankTransactionHistory({
           onClick={handleProceed}
           className="flex-1 py-3 px-6 rounded-xl bg-violet-600 hover:bg-violet-500 active:bg-violet-700 text-white font-semibold text-xs sm:text-sm transition-all shadow-lg shadow-violet-950/40 flex items-center justify-center gap-2"
         >
-          <span>Select Income Sources & Mint</span>
+          <span>Mint Verified Income</span>
           <ArrowRight className="w-4 h-4" />
         </button>
       </div>

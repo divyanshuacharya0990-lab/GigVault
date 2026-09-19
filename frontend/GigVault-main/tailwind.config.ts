@@ -54,6 +54,15 @@ const config: Config = {
       borderRadius: {
         card: "14px",
       },
+      keyframes: {
+        scan: {
+          "0%, 100%": { transform: "translateY(0)" },
+          "50%": { transform: "translateY(12rem)" },
+        },
+      },
+      animation: {
+        scan: "scan 2.5s ease-in-out infinite",
+      },
     },
   },
   plugins: [],
