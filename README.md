@@ -12,6 +12,11 @@
 
 GigVault addresses the core challenges of trust, privacy, and frictionless onboarding in the modern gig economy. By leveraging **Zero-Knowledge Proofs (ZKPs)** via the Anon Aadhaar protocol, we enable instant, cryptographically verifiable identity checks without exposing sensitive personal data.
 
+### ⛓️ Domain Alignment: FinTech & Blockchain
+GigVault is uniquely positioned at the intersection of Decentralized Finance (DeFi) and traditional FinTech:
+- **Blockchain (Web3 Identity):** We mint **Soulbound Work Passports** directly on-chain. By using zk-SNARKs (Groth16), users generate cryptographic proofs of their identity and financial history, allowing smart contracts to programmatically verify reputation for decentralized lending, under-collateralized loans, or DAOs—without revealing the underlying data.
+- **FinTech (Web2 Bridges):** We act as a privacy-preserving layer over traditional banking. By interfacing with the Account Aggregator (AA) framework, GigVault ingests streaming bank data, derives financial health metrics (income, gig tenure), and tokenizes these insights. This drastically reduces underwriting costs and friction for traditional financial institutions and gig platforms.
+
 ### 1. Functionality & Innovation 🚀
 - **Zero-Knowledge KYC:** Users prove their identity (e.g., Age > 18, State Residency, Gender) locally on their device. No biometric data or full Aadhaar numbers ever hit our servers.
 - **Verifiable Credentials:** Income histories and payer profiles are derived instantly from raw bank statements via the Financial Information Provider (FIP) simulator.
